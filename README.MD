@@ -1,25 +1,73 @@
-# DXF DIEGO Project
+# 📐 DXF - CEVASA
 
-Projeto para visualização, processamento e conversão de arquivos DXF.  
-O sistema permite carregar um arquivo DXF, visualizar seu conteúdo, selecionar layers, medir distâncias e gerar layouts finais (incluindo planilhas e conversão para PDF).
+Sistema completo para visualização, medição e geração automática de planilhas e relatórios a partir de arquivos DXF, voltado para projetos de sistematização agrícola (cana-de-açúcar).
 
-## Funcionalidades
+---
 
-- **Carregamento e Parsing de DXF:**  
-  Importa e interpreta arquivos DXF, extraindo entidades gráficas.
+## ✅ Funcionalidades
 
-- **Visualização:**  
-  Exibe o desenho com interface gráfica interativa, permitindo medições e seleções.
+- 📁 Interface intuitiva para seleção de arquivos `.dxf`
+- 🗺️ Visualização interativa do mapa DXF com filtros de layers
+- 📏 Ferramenta de medição direta no mapa
+- 🧾 Geração automática de:
+  - Tabela de **comprimentos por layer**
+  - Tabela de **talhões**
+  - Legenda com cores e nomes dos layers
+- 🖼️ Inserção automática da imagem do mapa
+- 📄 Geração de planilha Excel + PDF
+- 🧩 Ícone personalizado
+- 🔒 Interface limpa, sem terminal aberto na versão empacotada
 
-- **Geração de Layout:**  
-  Processa os dados extraídos e gera planilhas (Excel) e imagens com o layout final.
+---
 
-- **Conversão para PDF:**  
-  (Se aplicável) Converte o resultado para formato PDF.
+## 🖼️ Imagem do Sistema
 
-## Estrutura do Projeto
+<p align="center">
+  <img src="docs/interface_preview.png" alt="Preview do Sistema" width="600">
+</p>
 
-- `main.py`: Ponto de entrada do programa.
-- `src/`: Contém os módulos-fonte do projeto.
-- `resources/`: Armazena imagens, arquivos de exemplo e planilhas.
-- `output/`: Pasta para salvar as saídas geradas pelo programa.
+---
+
+## 🚀 Como Executar (Versão Empacotada)
+
+1. Clique no executável: `DXF-CEVASA.exe`
+2. Selecione o arquivo `.dxf`
+3. Interaja com o mapa, clique em "Salvar Figura"
+4. Preencha os dados solicitados
+5. Sua planilha será gerada em `resources/excel/Planilha_Final.xlsx`
+
+---
+
+## 🔧 Tecnologias Utilizadas
+
+- Python 3.13
+- `ezdxf`, `matplotlib`, `tkinter`, `openpyxl`, `Pillow`, `win32com`, `PyInstaller`
+
+---
+
+## 📁 Estrutura do Projeto
+
+DXF-CEVASA/ 
+├── main.py 
+├── src/ 
+│ ├── app_interface.py 
+│ ├── gui.py 
+│ ├── dxf_loader.py 
+│ ├── dxf_parser.py 
+│ ├── layout_generator.py 
+│ ├── talhoes_parser.py 
+│ └── layer_selector.py 
+├── resources/ 
+│ └── excel/ 
+│ ├── Planilha_template.xlsx 
+│ └── Planilha_Final.xlsx 
+├── output/ 
+│ └── mapa.png 
+└── README.md
+
+---
+
+## 👨‍💻 Autor
+
+**Diego Murari**  
+🔗 [linkedin.com/in/diegomurari](https://linkedin.com/in/diegomurari)
