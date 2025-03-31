@@ -8,13 +8,14 @@ import matplotlib.gridspec as gridspec
 import math
 import re
 import os
+import tkinter as tk
 from datetime import datetime
 from .dxf_loader import load_dxf
 from .dxf_parser import parse_dxf, calcular_tabelas
 from .layout_generator import gerar_layout_final
 from .talhoes_parser import extrair_talhoes_por_proximidade, extrair_legenda_layers
 from matplotlib.patches import FancyBboxPatch
-
+import tkinter as tk
 # Variáveis globais para medição e controle
 measurement_mode = False
 measurement_points = []
@@ -24,7 +25,6 @@ viewport_ax = None
 fig = None
 measure_button = None
 dxf_file_path = None  # Variável global para armazenar o caminho do DXF
-
 
 def desenhar_botao_arredondado(ax, label, callback):
     # Cria um patch arredondado que ocupará todo o eixo
@@ -244,6 +244,7 @@ def salvar_mapa_como_png():
         print(f"❌ Erro ao salvar o mapa como imagem: {e}")
 
 def launch_gui(file_path):
+    import tkinter as tk
     global dxf_file_path, current_doc, visible_layers, fig, viewport_ax
     dxf_file_path = file_path
     doc = load_dxf(file_path)
@@ -256,62 +257,88 @@ def launch_gui(file_path):
     unique_layers = get_unique_layers(dxf_data)
     visible_layers = unique_layers.copy()
 
-    fig = plt.figure(figsize=(16, 9))
+    # Tamanho da janela
+    window_width_px = 1280
+    window_height_px = 720
+    dpi = 100
+
+    # Criação da figura com tamanho fixo
+    fig = plt.figure(figsize=(window_width_px / dpi, window_height_px / dpi), dpi=dpi)
+
+    # Ajustar janela matplotlib
+    manager = plt.get_current_fig_manager()
+    try:
+        manager.window.wm_geometry(f"{window_width_px}x{window_height_px}+100+100")
+    except Exception as e:
+        print("Erro ao ajustar tamanho da janela:", e)
+
+    # Forçar renderização para obter dimensões reais da figura
+    fig.canvas.draw()
+    fig_width_px = fig.bbox.width
+    fig_height_px = fig.bbox.height
+
+    # Fator de escala real baseado na altura da figura
+    scale_factor = fig_height_px / 720
+
+    # Função auxiliar para escalar fontes com limites
+    def escalar(valor_base):
+        return max(8, min(int(valor_base * scale_factor), 36))
+
+    # Ajuste de espaço do título
+    fig.subplots_adjust(top=1 - 0.05 * scale_factor)
+
     fig.suptitle(
         "Projeto de Sistematização - Visualização do DXF",
-        fontsize=28,
+        fontsize=escalar(28),
         fontweight='bold',
         fontname='DejaVu Sans',
         color='#4CAF50'
     )
+
     gs = gridspec.GridSpec(ncols=2, nrows=1, width_ratios=[4, 1], wspace=0.1)
 
     viewport_ax = fig.add_subplot(gs[0, 0])
     setup_plot(viewport_ax)
     draw_dxf(viewport_ax, dxf_data, visible_layers)
 
-    # Área de controle lateral
     control_ax = fig.add_subplot(gs[0, 1])
     control_ax.axis('off')
     control_pos = control_ax.get_position()
 
-    button_color = '#4CAF50'
-    hover_color = '#45a049'
-
-    # Manter os valores de posição definidos:
     btn_width = control_pos.width * 0.8
-    btn_height = control_pos.height * 0.08
+    btn_height = control_pos.height * 0.08 * scale_factor
     btn_x = control_pos.x0 + 0.1 * control_pos.width
 
+    # Espaçamento entre botões proporcional
+    botao_topo = control_pos.y0 + control_pos.height * 0.80
+    botao_gap = control_pos.height * 0.11 * scale_factor
+
     # Botão: Redefinir Visualização
-    reset_ax = fig.add_axes([btn_x, control_pos.y0 + 0.8 * control_pos.height, btn_width, btn_height])
+    reset_ax = fig.add_axes([btn_x, botao_topo, btn_width, btn_height])
     reset_button = desenhar_botao_arredondado(reset_ax, "Redefinir Visualização", lambda event: reset_view(event, viewport_ax, fig))
     reset_button.label.set_color("white")
-    reset_button.label.set_fontsize(10)
+    reset_button.label.set_fontsize(escalar(10))
 
     # Botão: Medir Distância
-    measure_ax = fig.add_axes([btn_x, control_pos.y0 + 0.7 * control_pos.height, btn_width, btn_height])
+    measure_ax = fig.add_axes([btn_x, botao_topo - botao_gap, btn_width, btn_height])
     measure_button = desenhar_botao_arredondado(measure_ax, "Medir Distância", toggle_measurement_mode)
     measure_button.label.set_color("white")
-    measure_button.label.set_fontsize(10)
+    measure_button.label.set_fontsize(escalar(10))
 
     # Botão: Salvar Figura
-    save_ax = fig.add_axes([btn_x, control_pos.y0 + 0.6 * control_pos.height, btn_width, btn_height])
+    save_ax = fig.add_axes([btn_x, botao_topo - 2 * botao_gap, btn_width, btn_height])
     save_button = desenhar_botao_arredondado(save_ax, "Salvar Figura", on_save_button_clicked)
     save_button.label.set_color("white")
-    save_button.label.set_fontsize(10)
+    save_button.label.set_fontsize(escalar(10))
 
-    # Checkboxes para camadas - ajustando o painel
+    # Checkboxes
     check_ax = fig.add_axes([
-        control_pos.x0 - 0.01,   # Mais à esquerda
-        control_pos.y0 + 0.08,   # Um pouco acima para não colar no rodapé
-        control_pos.width * 1.7,  # Largura conforme definido
-        control_pos.height * 0.4  # Altura para caber os layers
+        control_pos.x0 - 0.01,
+        control_pos.y0 + 0.08,
+        control_pos.width * 1.7,
+        control_pos.height * 0.4
     ])
-    # Usar os nomes originais dos layers (sem quebra de linha)
     check = CheckButtons(check_ax, unique_layers, [True] * len(unique_layers))
-
-    # Estilo do fundo
     check_ax.set_facecolor("#333333")
     check_ax.set_alpha(1.0)
     try:
@@ -319,18 +346,11 @@ def launch_gui(file_path):
     except Exception:
         pass
 
-    # Estilo das labels
     for lbl in check.labels:
         lbl.set_color("white")
-        lbl.set_fontsize(12)
+        lbl.set_fontsize(escalar(9))
         lbl.set_fontweight("bold")
 
-    # Atualiza as labels (se necessário, pode ajustar novamente)
-    for lbl in check.labels:
-        lbl.set_fontsize(9)
-        lbl.set_color("white")
-
-    # Reaplica o fundo (opcional)
     check_ax.set_facecolor("#333333")
     check_ax.set_alpha(1.0)
     check._spacing = 0.15
@@ -342,7 +362,10 @@ def launch_gui(file_path):
             visible_layers.append(label)
         draw_dxf(viewport_ax, dxf_data, visible_layers)
         fig.canvas.draw_idle()
-    check.on_clicked(update_layers)
 
+    check.on_clicked(update_layers)
     fig.canvas.mpl_connect('button_press_event', on_click_measurement)
+
+    # Redesenha tudo com escalas aplicadas
+    fig.canvas.draw()
     plt.show()
