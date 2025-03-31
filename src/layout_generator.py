@@ -415,10 +415,12 @@ def gerar_layout_final(dxf_file_path, layer_data, talhoes_dict, legenda_layers):
     set_cell_value(ws_pagina2, "F33", parc)
     
     # Inserir imagem (mapa) somente na aba Pagina1
-    if os.path.exists("mapa.png"):
+    if os.path.exists(os.path.join("output", "mapa.png")):
+        # use o caminho completo na chamada das funções:
+        image_path = os.path.join("output", "mapa.png")
         try:
-            redimensionar_imagem("mapa.png", 800, 575)
-            centralizar_imagem_na_planilha(ws_pagina1, "mapa.png", "A02")
+            redimensionar_imagem(image_path, 800, 575)
+            centralizar_imagem_na_planilha(ws_pagina1, image_path, "A02")
             print("✅ Imagem 'mapa.png' adicionada na aba 'Pagina1'.")
         except Exception as e:
             print(f"❌ Erro ao inserir imagem 'mapa.png': {e}")

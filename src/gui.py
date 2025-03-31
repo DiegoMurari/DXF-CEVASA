@@ -164,22 +164,21 @@ def on_click_measurement(event):
         fig.canvas.draw_idle()
 
 def salvar_mapa_como_png():
-    global fig, viewport_ax, current_doc
+    global fig, viewport_ax, current_doc, visible_layers
     try:
+        print("Iniciando a geração do mapa...")
         if fig and viewport_ax:
-            print("✅ Visualização identificada. Gerando 'mapa.png'...")
+            print("Visualização identificada. Gerando 'mapa.png'...")
 
-            # Redesenhar o mapa para garantir que está atualizado
             if current_doc:
                 dxf_data = parse_dxf(current_doc)
                 draw_dxf(viewport_ax, dxf_data, visible_layers)
 
-                # Determinar os limites do mapa automaticamente
                 all_x = []
                 all_y = []
                 for entity in dxf_data:
                     if entity['type'] in ['LINE', 'POLYLINE']:
-                        for point in entity['points']:
+                        for point in entity.get('points', []):
                             all_x.append(point[0])
                             all_y.append(point[1])
                     elif entity['type'] == 'CIRCLE':
@@ -187,31 +186,28 @@ def salvar_mapa_como_png():
                         all_y.append(entity['center'][1])
 
                 if not all_x or not all_y:
-                    print("❌ Erro: Nenhum ponto detectado para salvar o mapa.")
+                    print("❌ Erro: Nenhum ponto detectado para definir os limites do mapa.")
                     return
 
                 x_min, x_max = min(all_x) - 100, max(all_x) + 100
                 y_min, y_max = min(all_y) - 100, max(all_y) + 100
-
                 viewport_ax.set_xlim(x_min, x_max)
                 viewport_ax.set_ylim(y_min, y_max)
                 viewport_ax.set_aspect('equal')
 
-            # Determinar a área a ser salva
             extent = viewport_ax.get_window_extent().transformed(fig.dpi_scale_trans.inverted())
 
-            # Define a pasta de saída relativa à raiz do projeto.
-            # Se 'gui.py' está em 'src', então a pasta output está em '../output'
             output_dir = os.path.join(os.path.dirname(__file__), '..', 'output')
             if not os.path.exists(output_dir):
                 os.makedirs(output_dir)
+                print(f"Pasta 'output' criada em: {output_dir}")
+
             output_path = os.path.join(output_dir, "mapa.png")
 
-            # Salva o mapa na pasta output
             fig.savefig(output_path, dpi=150, bbox_inches=extent, pad_inches=0.1)
-            print(f"✅ Mapa salvo com sucesso em '{output_path}'")
+            print(f"✅ Mapa salvo com sucesso em: {output_path}")
         else:
-            print("❌ Erro: A visualização do mapa não foi identificada corretamente.")
+            print("❌ Erro: Visualização do mapa não identificada.")
     except Exception as e:
         print(f"❌ Erro ao salvar o mapa como imagem: {e}")
 
