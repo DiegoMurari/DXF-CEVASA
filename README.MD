@@ -1,3 +1,4 @@
+
 # 📐 DXF - CEVASA
 
 Sistema completo para visualização, medição e geração automática de planilhas e relatórios a partir de arquivos DXF, voltado para projetos de sistematização agrícola (cana-de-açúcar).
@@ -20,54 +21,67 @@ Sistema completo para visualização, medição e geração automática de plani
 
 ---
 
-## 🖼️ Imagem do Sistema
+## 🖥️ Interface Inicial
 
 <p align="center">
-  <img src="docs/interface_preview.png" alt="Preview do Sistema" width="600">
+  <img src="docs/interface_inicial.png" alt="Interface Inicial" width="300">
 </p>
 
----
-
-## 🚀 Como Executar (Versão Empacotada)
-
-1. Clique no executável: `DXF-CEVASA.exe`
-2. Selecione o arquivo `.dxf`
-3. Interaja com o mapa, clique em "Salvar Figura"
-4. Preencha os dados solicitados
-5. Sua planilha será gerada em `resources/excel/Planilha_Final.xlsx`
+Tela de entrada do sistema. Ao clicar em **“Selecionar DXF”**, você escolhe o arquivo topográfico a ser processado.
 
 ---
 
-## 🔧 Tecnologias Utilizadas
+## 🗺️ Visualização Interativa do DXF
 
-- Python 3.13
-- `ezdxf`, `matplotlib`, `tkinter`, `openpyxl`, `Pillow`, `win32com`, `PyInstaller`
+<p align="center">
+  <img src="docs/visualizacao_dxf.png" alt="Visualização DXF" width="800">
+</p>
 
----
-
-## 📁 Estrutura do Projeto
-
-DXF-CEVASA/ 
-├── main.py 
-├── src/ 
-│ ├── app_interface.py 
-│ ├── gui.py 
-│ ├── dxf_loader.py 
-│ ├── dxf_parser.py 
-│ ├── layout_generator.py 
-│ ├── talhoes_parser.py 
-│ └── layer_selector.py 
-├── resources/ 
-│ └── excel/ 
-│ ├── Planilha_template.xlsx 
-│ └── Planilha_Final.xlsx 
-├── output/ 
-│ └── mapa.png 
-└── README.md
+O sistema renderiza automaticamente o mapa extraído do DXF, preservando as cores, textos e geometrias.  
+Na lateral direita, você tem botões para redefinir visualização, medir distâncias e salvar a figura final.
 
 ---
 
-## 👨‍💻 Autor
+## ✅ Filtros por Layer
 
-**Diego Murari**  
-🔗 [linkedin.com/in/diegomurari](https://linkedin.com/in/diegomurari)
+<p align="center">
+  <img src="docs/selecionar_layers.png" alt="Seleção de Layers" width="400">
+</p>
+
+Antes de gerar a planilha, o sistema permite selecionar **quais layers devem ser incluídos nos cálculos**.
+
+---
+
+## 📄 Mapa e Legenda Gerados na Planilha
+
+<p align="center">
+  <img src="docs/layout_excel_mapa.png" alt="Mapa na Planilha" width="700">
+</p>
+
+A planilha gerada inclui:
+
+- Mapa do DXF renderizado
+- Legenda automática baseada nos layers utilizados
+- Dados preenchidos automaticamente:
+  - **Data atual**
+  - **Versão (incremental)**
+  - Nome da propriedade (arquivo DXF)
+  - Área Cana, Escala, Distância (preenchidos pelo usuário)
+
+---
+
+## 📊 Tabelas de Comprimentos e Talhões
+
+<p align="center">
+  <img src="docs/planilha_tabelas.png" alt="Tabelas" width="700">
+</p>
+
+Com base nas linhas do DXF, o sistema calcula:
+
+- **Comprimento por layer** (quantidade, total e média)
+- **Área por talhão**, em hectares e alqueires
+- **Soma total da área cultivável**
+
+> 🔄 As tabelas são montadas automaticamente com base nos layers visíveis e textos próximos às geometrias.
+
+---
