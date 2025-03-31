@@ -1,4 +1,5 @@
 import matplotlib
+import sys
 matplotlib.use('TkAgg')  # Força o backend interativo
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Button, CheckButtons
@@ -22,6 +23,11 @@ viewport_ax = None
 fig = None
 measure_button = None
 dxf_file_path = None  # Variável global para armazenar o caminho do DXF
+
+def get_output_dir():
+    if getattr(sys, 'frozen', False):
+        return os.path.join(os.path.dirname(sys.executable), "output")
+    return os.path.join(os.path.dirname(__file__), "output")
 
 def setup_plot(ax):
     ax.set_facecolor('white')
@@ -197,7 +203,7 @@ def salvar_mapa_como_png():
 
             extent = viewport_ax.get_window_extent().transformed(fig.dpi_scale_trans.inverted())
 
-            output_dir = os.path.join(os.path.dirname(__file__), '..', 'output')
+            output_dir = get_output_dir()
             if not os.path.exists(output_dir):
                 os.makedirs(output_dir)
                 print(f"Pasta 'output' criada em: {output_dir}")

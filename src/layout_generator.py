@@ -1,3 +1,4 @@
+import sys
 import os
 import tkinter as tk
 from tkinter import simpledialog, messagebox
@@ -381,8 +382,27 @@ def gerar_layout_final(dxf_file_path, layer_data, talhoes_dict, legenda_layers):
     talhoes_dict = extrair_talhoes_por_proximidade(entities, distance_threshold=150.0, debug=False)
     
     # Carregar a planilha template
-    template_file = os.path.join(os.path.dirname(__file__), '..', 'resources', 'excel', 'Planilha_template.xlsx')
-    output_file = os.path.join(os.path.dirname(__file__), '..','resources', 'excel', 'Planilha_Final.xlsx')
+    def resource_path(relative_path):
+        """
+        Retorna o caminho absoluto para um recurso, seja durante o desenvolvimento
+        ou quando executado com PyInstaller.
+        """
+        try:
+            base_path = sys._MEIPASS  # PyInstaller usa isso na build
+        except Exception:
+            base_path = os.path.abspath(".")  # Durante desenvolvimento
+        return os.path.join(base_path, relative_path)
+
+    # Caminho para o template (dentro do executável ou pasta local)
+    template_file = resource_path('resources/excel/Planilha_template.xlsx')
+
+    # Caminho para salvar a planilha final (mesma pasta da aplicação)
+    output_dir = os.path.join(os.path.dirname(sys.executable), 'output') if getattr(sys, 'frozen', False) else os.path.join(os.path.dirname(__file__), '..', 'output')
+    os.makedirs(output_dir, exist_ok=True)
+
+    output_file = os.path.join(output_dir, 'Planilha_Final.xlsx')
+
+    # Carrega o template
     wb = openpyxl.load_workbook(template_file)
     
     if "Pagina1" not in wb.sheetnames or "Pagina2" not in wb.sheetnames:
