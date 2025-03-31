@@ -13,6 +13,7 @@ from .dxf_loader import load_dxf
 from .dxf_parser import parse_dxf, calcular_tabelas
 from .layout_generator import gerar_layout_final
 from .talhoes_parser import extrair_talhoes_por_proximidade, extrair_legenda_layers
+from matplotlib.patches import FancyBboxPatch
 
 # Variáveis globais para medição e controle
 measurement_mode = False
@@ -24,16 +25,41 @@ fig = None
 measure_button = None
 dxf_file_path = None  # Variável global para armazenar o caminho do DXF
 
+
+def desenhar_botao_arredondado(ax, label, callback):
+    # Cria um patch arredondado que ocupará todo o eixo
+    bbox = FancyBboxPatch(
+        (0, 0), 1, 1,
+        boxstyle="round,pad=0.02,rounding_size=0.1",  # Ajuste rounding_size conforme necessário
+        transform=ax.transAxes,
+        facecolor='#4CAF50',
+        edgecolor='none'
+    )
+    # Adiciona o patch no fundo do eixo
+    ax.add_patch(bbox)
+    # Cria o botão com cor 'none' para que o fundo seja visto
+    btn = Button(ax, label, color='none', hovercolor='#45a049')
+    btn.label.set_color("white")
+    btn.label.set_fontsize(10)
+    btn.on_clicked(callback)
+    return btn
+
 def get_output_dir():
+    """Retorna o caminho correto da pasta 'output' na raiz do projeto, mesmo quando chamado de dentro do src/."""
     if getattr(sys, 'frozen', False):
-        return os.path.join(os.path.dirname(sys.executable), "output")
-    return os.path.join(os.path.dirname(__file__), "output")
+        # Empacotado (PyInstaller)
+        base_path = sys._MEIPASS
+    else:
+        # Caminho normal (ex: C:/Users/Usuario/DXF-CEVASA/src)
+        base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+
+    output_path = os.path.join(base_path, 'output')
+    return output_path
 
 def setup_plot(ax):
     ax.set_facecolor('white')
     ax.grid(True, linestyle='--', color='gray', alpha=0.3)
     ax.set_aspect('equal', adjustable='box')
-    ax.set_title('📋 Projeto de Sistematização - Visualização do DXF', fontsize=14, color='#4CAF50')
 
 def draw_dxf(ax, dxf_entities, visible_layers=None):
     ax.cla()
@@ -226,17 +252,25 @@ def launch_gui(file_path):
         return
     current_doc = doc
     dxf_data = parse_dxf(doc)
+    print("DXF parseado. Número de entidades:", len(dxf_data))
     unique_layers = get_unique_layers(dxf_data)
     visible_layers = unique_layers.copy()
 
     fig = plt.figure(figsize=(16, 9))
-    fig.suptitle("Projeto de Sistematização - Visualização do DXF", fontsize=18, color='#4CAF50')
+    fig.suptitle(
+        "Projeto de Sistematização - Visualização do DXF",
+        fontsize=28,
+        fontweight='bold',
+        fontname='DejaVu Sans',
+        color='#4CAF50'
+    )
     gs = gridspec.GridSpec(ncols=2, nrows=1, width_ratios=[4, 1], wspace=0.1)
 
     viewport_ax = fig.add_subplot(gs[0, 0])
     setup_plot(viewport_ax)
     draw_dxf(viewport_ax, dxf_data, visible_layers)
 
+    # Área de controle lateral
     control_ax = fig.add_subplot(gs[0, 1])
     control_ax.axis('off')
     control_pos = control_ax.get_position()
@@ -244,44 +278,63 @@ def launch_gui(file_path):
     button_color = '#4CAF50'
     hover_color = '#45a049'
 
+    # Manter os valores de posição definidos:
+    btn_width = control_pos.width * 0.8
+    btn_height = control_pos.height * 0.08
+    btn_x = control_pos.x0 + 0.1 * control_pos.width
+
     # Botão: Redefinir Visualização
-    reset_ax = fig.add_axes([control_pos.x0 + 0.1 * control_pos.width,
-                             control_pos.y0 + 0.65 * control_pos.height,
-                             control_pos.width * 0.8,
-                             control_pos.height * 0.08])
-    reset_button = Button(reset_ax, 'Redefinir Visualização', color=button_color, hovercolor=hover_color)
+    reset_ax = fig.add_axes([btn_x, control_pos.y0 + 0.8 * control_pos.height, btn_width, btn_height])
+    reset_button = desenhar_botao_arredondado(reset_ax, "Redefinir Visualização", lambda event: reset_view(event, viewport_ax, fig))
     reset_button.label.set_color("white")
     reset_button.label.set_fontsize(10)
-    reset_button.on_clicked(lambda event: reset_view(event, viewport_ax, fig))
 
     # Botão: Medir Distância
-    measure_ax = fig.add_axes([control_pos.x0 + 0.1 * control_pos.width,
-                               control_pos.y0 + 0.55 * control_pos.height,
-                               control_pos.width * 0.8,
-                               control_pos.height * 0.08])
-    measure_button = Button(measure_ax, 'Medir Distância', color=button_color, hovercolor=hover_color)
+    measure_ax = fig.add_axes([btn_x, control_pos.y0 + 0.7 * control_pos.height, btn_width, btn_height])
+    measure_button = desenhar_botao_arredondado(measure_ax, "Medir Distância", toggle_measurement_mode)
     measure_button.label.set_color("white")
     measure_button.label.set_fontsize(10)
-    measure_button.on_clicked(toggle_measurement_mode)
 
-    # Botão: Salvar Figura (chama gerar_layout_final com o DXF)
-    save_ax = fig.add_axes([control_pos.x0 + 0.1 * control_pos.width,
-                            control_pos.y0 + 0.45 * control_pos.height,
-                            control_pos.width * 0.8,
-                            control_pos.height * 0.08])
-    save_button = Button(save_ax, 'Salvar Figura', color=button_color, hovercolor=hover_color)
+    # Botão: Salvar Figura
+    save_ax = fig.add_axes([btn_x, control_pos.y0 + 0.6 * control_pos.height, btn_width, btn_height])
+    save_button = desenhar_botao_arredondado(save_ax, "Salvar Figura", on_save_button_clicked)
     save_button.label.set_color("white")
     save_button.label.set_fontsize(10)
-    save_button.on_clicked(on_save_button_clicked)
 
-    # Checkboxes para camadas
-    check_ax = fig.add_axes([control_pos.x0 + 0.05 * control_pos.width,
-                             control_pos.y0 + 0.1 * control_pos.height,
-                             control_pos.width * 0.9,
-                             control_pos.height * 0.35])
+    # Checkboxes para camadas - ajustando o painel
+    check_ax = fig.add_axes([
+        control_pos.x0 - 0.01,   # Mais à esquerda
+        control_pos.y0 + 0.08,   # Um pouco acima para não colar no rodapé
+        control_pos.width * 1.7,  # Largura conforme definido
+        control_pos.height * 0.4  # Altura para caber os layers
+    ])
+    # Usar os nomes originais dos layers (sem quebra de linha)
     check = CheckButtons(check_ax, unique_layers, [True] * len(unique_layers))
-    if hasattr(check, 'activecolor'):
-        check.activecolor = 'white'
+
+    # Estilo do fundo
+    check_ax.set_facecolor("#333333")
+    check_ax.set_alpha(1.0)
+    try:
+        check._spacing = 0.15
+    except Exception:
+        pass
+
+    # Estilo das labels
+    for lbl in check.labels:
+        lbl.set_color("white")
+        lbl.set_fontsize(12)
+        lbl.set_fontweight("bold")
+
+    # Atualiza as labels (se necessário, pode ajustar novamente)
+    for lbl in check.labels:
+        lbl.set_fontsize(9)
+        lbl.set_color("white")
+
+    # Reaplica o fundo (opcional)
+    check_ax.set_facecolor("#333333")
+    check_ax.set_alpha(1.0)
+    check._spacing = 0.15
+
     def update_layers(label):
         if label in visible_layers:
             visible_layers.remove(label)
@@ -290,10 +343,6 @@ def launch_gui(file_path):
         draw_dxf(viewport_ax, dxf_data, visible_layers)
         fig.canvas.draw_idle()
     check.on_clicked(update_layers)
-    check_ax.set_facecolor("#333333")
-    check_ax.set_alpha(1.0)
-    for lbl in check.labels:
-        lbl.set_color("white")
-        lbl.set_fontsize(9)
+
     fig.canvas.mpl_connect('button_press_event', on_click_measurement)
     plt.show()

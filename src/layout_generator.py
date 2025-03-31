@@ -140,16 +140,6 @@ def centralizar_imagem_na_planilha(ws, imagem_path, cell_coord="E20"):
         print(f"❌ Erro ao inserir imagem na planilha: {e}")
 
 def adicionar_tabela_comprimentos_custom(ws, layer_data, start_row=1, start_col=1):
-    """
-    Cria uma tabela de "COMPRIMENTOS POR LAYER" com estilo e bordas finas,
-    semelhante ao modelo fornecido, e garante que a célula onde os nomes dos layers 
-    são inseridos não altere seu tamanho.
-    
-    :param ws: Worksheet onde a tabela será criada
-    :param layer_data: Dicionário {layer: {"qtd": int, "total": float}}
-    :param start_row: Linha inicial da tabela
-    :param start_col: Coluna inicial da tabela
-    """
     # --------------------------
     #   Configurações de estilo
     # --------------------------
@@ -375,8 +365,9 @@ def gerar_layout_final(dxf_file_path, layer_data, talhoes_dict, legenda_layers):
     entities = parse_dxf(doc)
     
     # Permitir que o usuário selecione os layers para a tabela de comprimentos
-    layers_disponiveis = list(layer_data.keys())
+    layers_disponiveis = [layer for layer in layer_data if layer.upper() != "NUMERAÇÕES DOS TALHÕES"]
     layers_comprimentos = selecionar_layers(layers_disponiveis, "Selecione os layers para a Tabela de Comprimentos")
+    layer_data = {layer: layer_data[layer] for layer in layers_comprimentos}
     
     # Para a tabela de talhões, extraímos automaticamente os dados a partir das entidades do DXF
     talhoes_dict = extrair_talhoes_por_proximidade(entities, distance_threshold=150.0, debug=False)
