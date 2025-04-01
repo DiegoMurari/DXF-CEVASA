@@ -1,12 +1,13 @@
+
 import math
 import ezdxf
-from ezdxf.colors import aci2rgb
 from collections import defaultdict
 from .layout_generator import gerar_layout_final
+from .dxf_utils import get_entity_color  # NOVO
 import re
-import math
 
-def get_entity_color(entity, doc):
+# Mantido para compatibilidade, se necessário
+def get_entity_color_original(entity, doc):
     color_aci = entity.dxf.color
     if color_aci is None or color_aci == 256:
         layer = doc.layers.get(entity.dxf.layer)
@@ -14,7 +15,7 @@ def get_entity_color(entity, doc):
     elif color_aci == 0:
         layer = doc.layers.get(entity.dxf.layer)
         color_aci = layer.color
-    r, g, b = aci2rgb(color_aci)
+    r, g, b = ezdxf.colors.aci2rgb(color_aci)
     return (r/255.0, g/255.0, b/255.0)
 
 def parse_entity(entity, doc):
@@ -52,22 +53,11 @@ def parse_entity(entity, doc):
             pass
         return result
 
-    if etype == "MLEADER":
+    if etype in ['MLEADER', 'LEADER']:
         result = []
         try:
-            mleader_entities = list(entity.virtual_entities())
-            for mle in mleader_entities:
-                result.extend(parse_entity(mle, doc))
-        except Exception:
-            pass
-        return result
-
-    if etype == "LEADER":
-        result = []
-        try:
-            leader_entities = list(entity.virtual_entities())
-            for le in leader_entities:
-                result.extend(parse_entity(le, doc))
+            for sub in entity.virtual_entities():
+                result.extend(parse_entity(sub, doc))
         except Exception:
             pass
         return result
@@ -127,6 +117,36 @@ def parse_entity(entity, doc):
     if etype == 'HATCH':
         return [{'type': 'HATCH', 'pattern': entity.dxf.pattern_name, 'layer': layer, 'color': color}]
 
+    if etype == 'SOLID':
+        pts = [tuple(p) for p in entity.dxf.points]
+        return [{'type': 'SOLID', 'points': pts, 'layer': layer, 'color': color}]
+
+    if etype == '3DFACE':
+        pts = [tuple(entity.dxf.get_dxf_attrib(f'vtx{i}')) for i in range(4)]
+        return [{'type': '3DFACE', 'points': pts, 'layer': layer, 'color': color}]
+
+    if etype == 'IMAGE':
+        return [{'type': 'IMAGE', 'layer': layer, 'color': color, 'info': str(entity)}]
+
+    if etype == 'POINT':
+        return [{'type': 'POINT', 'position': tuple(entity.dxf.location), 'layer': layer, 'color': color}]
+
+    if etype == 'XLINE':
+        return [{'type': 'XLINE', 'start': tuple(entity.dxf.start), 'unit_dir': tuple(entity.dxf.unit_dir), 'layer': layer, 'color': color}]
+
+    if etype == 'RAY':
+        return [{'type': 'RAY', 'start': tuple(entity.dxf.start), 'unit_dir': tuple(entity.dxf.unit_dir), 'layer': layer, 'color': color}]
+    
+    if etype == 'BLOCK':
+        return [{'type': 'BLOCK', 'name': getattr(entity.dxf, "name", "Unnamed"), 'layer': layer, 'color': color, 'raw': str(entity)}]
+
+    if etype == 'TRACE':
+        points = [tuple(getattr(entity.dxf, f'vtx{i}', (0, 0))) for i in range(4)]
+        return [{'type': 'TRACE', 'points': points, 'layer': layer, 'color': color}]
+
+    if etype in ['MESH', 'REGION', 'SURFACE', '3DSOLID']:
+        return [{'type': etype, 'layer': layer, 'color': color, 'raw': str(entity)}]
+
     return [{'type': etype, 'layer': layer, 'color': color, 'raw': str(entity)}]
 
 def parse_dxf(doc):
@@ -143,18 +163,13 @@ def parse_dxf(doc):
 
     return all_entities
 
-# ==============================
-# TABELAS - ADICIONADO
-# ==============================
 def calcular_tabelas(dxf_entities):
-    # Tabela 1: Comprimentos por Layer
     layer_data = defaultdict(lambda: {'qtd': 0, 'total': 0.0})
     for entity in dxf_entities:
         if 'length' in entity:
             layer_data[entity['layer']]['qtd'] += 1
             layer_data[entity['layer']]['total'] += entity['length']
 
-    # Tabela 2: Talhões
     talhoes_data = defaultdict(lambda: {'area_ha': 0.0})
     for entity in dxf_entities:
         if entity.get('type') == 'TEXT':

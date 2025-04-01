@@ -1,11 +1,6 @@
 import tkinter as tk
 
 def selecionar_layers(layers_disponiveis, titulo):
-    """
-    Abre uma janela para o usuário selecionar os layers desejados.
-    Por padrão, todos os layers estarão marcados.
-    Retorna uma lista com os layers selecionados.
-    """
     def confirmar_selecao():
         nonlocal selecionados
         selecionados = [layer for layer, var in zip(layers_disponiveis, variaveis) if var.get()]

@@ -13,6 +13,8 @@ from .layer_selector import selecionar_layers
 from openpyxl.styles import Alignment, Font, PatternFill, Border, Side
 from src.talhoes_parser import extrair_talhoes_por_proximidade,extrair_legenda_layers
 import win32com.client as win32
+from openpyxl.styles import Font, Alignment
+import matplotlib.pyplot as plt
 
 MAX_DESENHISTA = 24  # Limite máximo para o nome do DESENHISTA
 
@@ -123,21 +125,6 @@ def redimensionar_imagem(imagem_path, largura, altura):
             print("✅ Imagem redimensionada para:", resized_img.size)
     except Exception as e:
         print(f"❌ Erro ao redimensionar imagem: {e}")
-
-def centralizar_imagem_na_planilha(ws, imagem_path, cell_coord="E20"):
-    if not os.path.exists(imagem_path):
-        print("❌ Imagem do mapa não encontrada.")
-        return
-    try:
-        img = XLImage(imagem_path)
-        cell = ws[cell_coord]
-        col_letter = get_column_letter(cell.column)
-        row_num = cell.row
-        img.anchor = f"{col_letter}{row_num}"
-        ws.add_image(img)
-        print("✅ Imagem inserida na planilha na célula", cell_coord)
-    except Exception as e:
-        print(f"❌ Erro ao inserir imagem na planilha: {e}")
 
 def adicionar_tabela_comprimentos_custom(ws, layer_data, start_row=1, start_col=1):
     # --------------------------
@@ -329,106 +316,192 @@ def adicionar_tabela_talhoes_custom(ws, talhoes_dict, start_row=1, start_col=1):
     ws.column_dimensions[get_column_letter(start_col+2)].width = 12
 
 def gerar_layout_final(dxf_file_path, layer_data, talhoes_dict, legenda_layers):
-    """
-    Gera a planilha final com:
-      - Mapa na aba 'Pagina1'
-      - Tabelas (comprimentos e talhões) na aba 'Pagina2'
-      - Informações do rodapé em ambas as abas
-      - Permite que o usuário selecione quais layers incluir nas tabelas
-    """
-    # Solicita entradas do usuário
-    desenhista = ask_limited_string("Informe o nome do DESENHISTA")
-    if desenhista is None:
+    
+    manager = plt.get_current_fig_manager()
+    root = manager.window  # Este é o Tk principal usado pelo Matplotlib
+    image_path = os.path.join("output", "mapa.png")
+
+    def gerar_nome_excel(dxf_file_path, versao_anterior=None):
+        # Extrai o nome do arquivo DXF (sem a extensão)
+        nome_dxf = os.path.splitext(os.path.basename(dxf_file_path))[0]
+        
+        # Calcula a versão
+        if versao_anterior is None:
+            versao = 0.1  # Caso não tenha versão anterior
+        else:
+            try:
+                versao = round(float(versao_anterior) + 0.1, 1)  # Incrementa a versão
+            except ValueError:
+                versao = 0.1  # Se a versão anterior não for válida, começa de 0.1
+        
+        # Cria o nome do arquivo Excel com versão
+        nome_excel = f"{nome_dxf}_V{versao}.xlsx"
+        
+        return nome_excel
+
+    def centralizar_imagem_na_planilha(ws, imagem_path, cell_coord="E20"):
+        from openpyxl.utils import get_column_letter
+        from openpyxl.drawing.image import Image as XLImage
+
+        print("centralizar_imagem_na_planilha chamada com imagem_path:", imagem_path)
+        if not os.path.exists(imagem_path):
+            print("❌ Imagem do mapa não encontrada.")
+            return
+        try:
+            img = XLImage(imagem_path)
+            cell = ws[cell_coord]
+            col_letter = get_column_letter(cell.column)
+            row_num = cell.row
+            img.anchor = f"{col_letter}{row_num}"
+            ws.add_image(img)
+            print(f"✅ Imagem inserida na planilha na célula {cell_coord}")
+        except Exception as e:
+            print(f"❌ Erro ao inserir imagem na planilha: {e}")
+    def abrir_tela_informacoes(parent):
+        import tkinter as tk
+        from tkinter import messagebox
+        from datetime import datetime
+        import os
+
+        # Cria o diálogo como Toplevel usando o parent fornecido
+        dialog = tk.Toplevel(parent)
+        dialog.title("Preencha as informações")
+        dialog.geometry("400x500")
+        
+        # Para garantir que o diálogo seja modal
+        dialog.grab_set()
+        
+        # Nome do arquivo para salvar o último desenhista
+        last_desenhista_file = "last_desenhista.txt"
+        last_desenhista = ""
+
+        if os.path.exists(last_desenhista_file):
+            with open(last_desenhista_file, "r", encoding="utf-8") as f:
+                last_desenhista = f.read().strip()
+
+        main_frame = tk.Frame(dialog, padx=20, pady=20)
+        main_frame.pack(fill="both", expand=True)
+        
+        def validate_desenhista(P):
+            return len(P) <= MAX_DESENHISTA
+
+        vcmd = (dialog.register(validate_desenhista), '%P')
+        result = {}
+
+        def confirmar_informacoes():
+            desenhista = entry_desenhista.get().strip().upper()
+            if not desenhista:
+                messagebox.showerror("Erro", "Campo obrigatório.", parent=dialog)
+                return
+            if len(desenhista) > MAX_DESENHISTA:
+                messagebox.showerror("Erro", f"O nome do Desenhista deve ter no máximo {MAX_DESENHISTA} caracteres.", parent=dialog)
+                return
+            with open(last_desenhista_file, "w", encoding="utf-8") as f:
+                f.write(desenhista)
+            
+            escala = entry_escala.get().strip()
+            distancia = entry_distancia.get().strip()
+            area_cana = entry_area_cana.get().strip()
+            prev = entry_prev.get().strip()
+            mun_est = entry_mun_est.get().strip()
+            parc = entry_parc.get().strip()
+
+            try:
+                prev_version = float(prev) if prev else 0.0
+            except ValueError:
+                prev_version = 0.0
+
+            nova_versao = round(prev_version + 0.1, 1)
+            data_atual = datetime.now().strftime("%d/%m/%Y")
+            propriedade = os.path.splitext(os.path.basename(dxf_file_path))[0].upper()
+
+            result.update({
+                'desenhista': desenhista,
+                'escala': escala,
+                'distancia': distancia,
+                'area_cana': area_cana,
+                'prev_version': prev_version,
+                'nova_versao': nova_versao,
+                'data_atual': data_atual,
+                'propriedade': propriedade,
+                'mun_est': mun_est,
+                'parc': parc
+            })
+            dialog.destroy()
+
+        tk.Label(main_frame, text="Desenhista (máx 24 caracteres):").pack(anchor="w", pady=(0,5))
+        entry_desenhista = tk.Entry(main_frame, validate='key', validatecommand=vcmd)
+        entry_desenhista.pack(fill="x", pady=(0,10))
+        if last_desenhista:
+            entry_desenhista.insert(0, last_desenhista)
+
+        tk.Label(main_frame, text="Escala:").pack(anchor="w", pady=(0,5))
+        entry_escala = tk.Entry(main_frame)
+        entry_escala.pack(fill="x", pady=(0,10))
+
+        tk.Label(main_frame, text="Distância:").pack(anchor="w", pady=(0,5))
+        entry_distancia = tk.Entry(main_frame)
+        entry_distancia.pack(fill="x", pady=(0,10))
+
+        tk.Label(main_frame, text="Área Cana (ha):").pack(anchor="w", pady=(0,5))
+        entry_area_cana = tk.Entry(main_frame)
+        entry_area_cana.pack(fill="x", pady=(0,10))
+
+        tk.Label(main_frame, text="Versão Anterior:").pack(anchor="w", pady=(0,5))
+        entry_prev = tk.Entry(main_frame)
+        entry_prev.pack(fill="x", pady=(0,10))
+
+        tk.Label(main_frame, text="Mun. Est. (Município e Estado):").pack(anchor="w", pady=(0,5))
+        entry_mun_est = tk.Entry(main_frame)
+        entry_mun_est.pack(fill="x", pady=(0,10))
+
+        tk.Label(main_frame, text="Parc. Outorgante (opcional):").pack(anchor="w", pady=(0,5))
+        entry_parc = tk.Entry(main_frame)
+        entry_parc.pack(fill="x", pady=(0,10))
+
+        tk.Button(main_frame, text="Confirmar", command=confirmar_informacoes).pack(pady=(20,0))
+                
+        dialog.wait_window()
+        return result if result else None
+    dados = abrir_tela_informacoes(root)
+    if dados is None:
         print("Operação cancelada.")
         return
-    escala = simpledialog.askstring("Input", "Informe a ESCALA:").strip().upper()
-    distancia = simpledialog.askstring("Input", "Informe a DISTÂNCIA:").strip().upper()
-    area_cana = simpledialog.askstring("Input", "Informe a ÁREA CANA (ha):").strip().upper()
-    prev = simpledialog.askstring("Input", "Informe a VERSÃO ANTERIOR (ou deixe em branco para 0.0):")
-    mun_est = simpledialog.askstring("Input", "Informe MUN. EST:").strip().upper()
-    parc = simpledialog.askstring("Input", "Informe PARC OUTORGANTE (opcional):")
-    parc = parc.strip().upper() if parc else ""
+
+    # 2. Abre a janela de seleção de layers (como Toplevel do mesmo root)
+    layers_selecionadas = selecionar_layers(list(layer_data.keys()), "Selecione os Layers para as Tabelas")
+    if not layers_selecionadas:
+        layers_selecionadas = list(layer_data.keys())
     
-    try:
-        prev_version = float(prev) if prev and prev.strip() != "" else 0.0
-    except ValueError:
-        prev_version = 0.0
-    nova_versao = round(prev_version + 0.1, 1)
-    
-    data_atual = datetime.now().strftime("%d/%m/%Y")
-    propriedade = os.path.splitext(os.path.basename(dxf_file_path))[0].upper()
-    
-    # Obter as entidades do DXF usando load_dxf e parse_dxf
-    from .dxf_loader import load_dxf
-    from .dxf_parser import parse_dxf
-    doc = load_dxf(dxf_file_path)
-    entities = parse_dxf(doc)
-    
-    # Permitir que o usuário selecione os layers para a tabela de comprimentos
-    layers_disponiveis = [layer for layer in layer_data if layer.upper() != "NUMERAÇÕES DOS TALHÕES"]
-    layers_comprimentos = selecionar_layers(layers_disponiveis, "Selecione os layers para a Tabela de Comprimentos")
-    layer_data = {layer: layer_data[layer] for layer in layers_comprimentos}
-    
-    # Para a tabela de talhões, extraímos automaticamente os dados a partir das entidades do DXF
-    talhoes_dict = extrair_talhoes_por_proximidade(entities, distance_threshold=150.0, debug=False)
-    
-    # Carregar a planilha template
+    # Filtra os dados conforme a seleção
+    layer_data = {layer: data for layer, data in layer_data.items() if layer in layers_selecionadas}
+    legenda_layers = {layer: info for layer, info in legenda_layers.items() if layer in layers_selecionadas}
+
+    # 3. Continuação: Carregamento do template e criação da planilha final
     def resource_path(relative_path):
-        """
-        Retorna o caminho absoluto para um recurso, seja durante o desenvolvimento
-        ou quando executado com PyInstaller.
-        """
         try:
             base_path = sys._MEIPASS  # PyInstaller usa isso na build
         except Exception:
-            base_path = os.path.abspath(".")  # Durante desenvolvimento
+            base_path = os.path.abspath(".")
         return os.path.join(base_path, relative_path)
 
-    # Caminho para o template (dentro do executável ou pasta local)
     template_file = resource_path('resources/excel/Planilha_template.xlsx')
-
-    # Caminho para salvar a planilha final (mesma pasta da aplicação)
     output_dir = os.path.join(os.path.dirname(sys.executable), 'output') if getattr(sys, 'frozen', False) else os.path.join(os.path.dirname(__file__), '..', 'output')
     os.makedirs(output_dir, exist_ok=True)
 
-    output_file = os.path.join(output_dir, 'Planilha_Final.xlsx')
+    # Gerar o nome do arquivo Excel com a versão
+    output_file = os.path.join("output", gerar_nome_excel(dxf_file_path))
 
-    # Carrega o template
     wb = openpyxl.load_workbook(template_file)
-    
     if "Pagina1" not in wb.sheetnames or "Pagina2" not in wb.sheetnames:
         print("❌ As abas 'Pagina1' ou 'Pagina2' não foram encontradas no template.")
         return
     
-    ws_pagina1 = wb["Pagina1"]  # Aba para inserir o mapa e o rodapé
-    ws_pagina2 = wb["Pagina2"]  # Aba para inserir as tabelas e o rodapé
-    
-    # Inserir informações do rodapé na aba Pagina1
-    set_cell_value(ws_pagina1, "I28", desenhista)
-    set_cell_value(ws_pagina1, "J29", data_atual)
-    set_cell_value(ws_pagina1, "I30", distancia)
-    set_cell_value(ws_pagina1, "I31", area_cana)
-    set_cell_value(ws_pagina1, "J31", nova_versao)
-    set_cell_value(ws_pagina1, "I29", escala)
-    set_cell_value(ws_pagina1, "B33", propriedade)
-    set_cell_value(ws_pagina1, "E33", mun_est)
-    set_cell_value(ws_pagina1, "H33", parc)
-    
-    # Inserir informações do rodapé na aba Pagina2
-    set_cell_value(ws_pagina2, "G28", desenhista)
-    set_cell_value(ws_pagina2, "H29", data_atual)
-    set_cell_value(ws_pagina2, "G30", distancia)
-    set_cell_value(ws_pagina2, "G31", area_cana)
-    set_cell_value(ws_pagina2, "H31", nova_versao)
-    set_cell_value(ws_pagina2, "G29", escala)
-    set_cell_value(ws_pagina2, "B33", propriedade)
-    set_cell_value(ws_pagina2, "C33", mun_est)
-    set_cell_value(ws_pagina2, "F33", parc)
-    
-    # Inserir imagem (mapa) somente na aba Pagina1
-    if os.path.exists(os.path.join("output", "mapa.png")):
-        # use o caminho completo na chamada das funções:
-        image_path = os.path.join("output", "mapa.png")
+    ws_pagina1 = wb["Pagina1"]
+    ws_pagina2 = wb["Pagina2"]
+
+    # Adiciona a imagem do mapa
+    if os.path.exists(image_path):
         try:
             redimensionar_imagem(image_path, 800, 575)
             centralizar_imagem_na_planilha(ws_pagina1, image_path, "A02")
@@ -436,13 +509,24 @@ def gerar_layout_final(dxf_file_path, layer_data, talhoes_dict, legenda_layers):
         except Exception as e:
             print(f"❌ Erro ao inserir imagem 'mapa.png': {e}")
     else:
-        print("❌ Imagem do mapa não foi gerada.")
+        print("❌ Imagem do mapa não foi encontrada no caminho:", image_path)
+    # Inserir as informações na planilha
+    set_cell_value(ws_pagina1, "I28", dados['desenhista'])
+    set_cell_value(ws_pagina1, "J29", dados['data_atual'])
+    set_cell_value(ws_pagina1, "I30", dados['distancia'])
+    set_cell_value(ws_pagina1, "I31", dados['area_cana'])
+    set_cell_value(ws_pagina1, "J31", dados['nova_versao'])
+    set_cell_value(ws_pagina1, "I29", dados['escala'])
+    set_cell_value(ws_pagina1, "B33", dados['propriedade'])
+    set_cell_value(ws_pagina1, "E33", dados['mun_est'])
+    set_cell_value(ws_pagina1, "H33", dados['parc'])
     
-
     # Inserir as tabelas na aba Pagina2
     adicionar_tabela_comprimentos_custom(ws_pagina2, layer_data, start_row=2, start_col=2)
     adicionar_tabela_talhoes_custom(ws_pagina2, talhoes_dict, start_row=2, start_col=7)
     adicionar_legenda_layers(ws_pagina1, legenda_layers, start_row=1, start_col=9)
 
+    # Salvar a planilha com o nome gerado
     wb.save(output_file)
     print(f"✅ Planilha salva como '{output_file}'.")
+    messagebox.showinfo("Sucesso", f"Planilha salva como '{output_file}'.")

@@ -201,11 +201,10 @@ def salvar_mapa_como_png():
         print("Iniciando a geração do mapa...")
         if fig and viewport_ax:
             print("Visualização identificada. Gerando 'mapa.png'...")
-
             if current_doc:
                 dxf_data = parse_dxf(current_doc)
                 draw_dxf(viewport_ax, dxf_data, visible_layers)
-
+                
                 all_x = []
                 all_y = []
                 for entity in dxf_data:
@@ -216,26 +215,53 @@ def salvar_mapa_como_png():
                     elif entity['type'] == 'CIRCLE':
                         all_x.append(entity['center'][0])
                         all_y.append(entity['center'][1])
-
+                
                 if not all_x or not all_y:
                     print("❌ Erro: Nenhum ponto detectado para definir os limites do mapa.")
                     return
 
-                x_min, x_max = min(all_x) - 100, max(all_x) + 100
-                y_min, y_max = min(all_y) - 100, max(all_y) + 100
-                viewport_ax.set_xlim(x_min, x_max)
-                viewport_ax.set_ylim(y_min, y_max)
+                # Calcular os limites dos dados
+                data_x_min = min(all_x)
+                data_x_max = max(all_x)
+                data_y_min = min(all_y)
+                data_y_max = max(all_y)
+
+                # Obter os limites atuais do eixo
+                current_xlim = viewport_ax.get_xlim()
+                current_ylim = viewport_ax.get_ylim()
+
+                # Definir um valor de threshold (limite crítico) para margem em unidades de dados
+                threshold = 50
+
+                # Verificar se algum lado está muito "apertado"
+                if (data_x_min - current_xlim[0] < threshold) or (current_xlim[1] - data_x_max < threshold) \
+                   or (data_y_min - current_ylim[0] < threshold) or (current_ylim[1] - data_y_max < threshold):
+                    zoom_out_factor = 1.2  # Aumenta os limites em 20%
+                else:
+                    zoom_out_factor = 1.0
+
+                # Calcular o centro e o range dos dados
+                x_center = (data_x_min + data_x_max) / 2
+                y_center = (data_y_min + data_y_max) / 2
+                x_range = (data_x_max - data_x_min) / 2 * zoom_out_factor
+                y_range = (data_y_max - data_y_min) / 2 * zoom_out_factor
+
+                new_xlim = (x_center - x_range, x_center + x_range)
+                new_ylim = (y_center - y_range, y_center + y_range)
+
+                # Aplicar os novos limites no eixo
+                viewport_ax.set_xlim(new_xlim)
+                viewport_ax.set_ylim(new_ylim)
                 viewport_ax.set_aspect('equal')
 
+            # Obter a extensão da área do eixo para salvar a figura
             extent = viewport_ax.get_window_extent().transformed(fig.dpi_scale_trans.inverted())
-
             output_dir = get_output_dir()
             if not os.path.exists(output_dir):
                 os.makedirs(output_dir)
                 print(f"Pasta 'output' criada em: {output_dir}")
 
             output_path = os.path.join(output_dir, "mapa.png")
-
             fig.savefig(output_path, dpi=150, bbox_inches=extent, pad_inches=0.1)
             print(f"✅ Mapa salvo com sucesso em: {output_path}")
         else:
@@ -253,50 +279,48 @@ def launch_gui(file_path):
         return
     current_doc = doc
     dxf_data = parse_dxf(doc)
-    print("DXF parseado. Número de entidades:", len(dxf_data))
     unique_layers = get_unique_layers(dxf_data)
     visible_layers = unique_layers.copy()
 
-    # Tamanho da janela
-    window_width_px = 1280
-    window_height_px = 720
-    dpi = 100
+    # Obter resolução da tela via Tkinter
+    root = tk.Tk()
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+    root.destroy()
 
-    # Criação da figura com tamanho fixo
+    # Resolução base do design
+    base_width = 1280
+    base_height = 720
+
+    # Usar no máximo 90% da resolução disponível
+    max_width = int(screen_width * 0.9)
+    max_height = int(screen_height * 0.9)
+
+    # A janela terá a dimensão base se a tela for maior; senão, será redimensionada para caber
+    window_width_px = min(base_width, max_width)
+    window_height_px = min(base_height, max_height)
+
+    # Fator de escala: se a tela for menor, o layout é reduzido para caber
+    scale_factor = min(window_width_px / base_width, window_height_px / base_height)
+    print(f"[DEBUG] Tela: {screen_width}x{screen_height} - Scale factor: {scale_factor:.2f}")
+
+    dpi = 100  # DPI base
     fig = plt.figure(figsize=(window_width_px / dpi, window_height_px / dpi), dpi=dpi)
-
-    # Ajustar janela matplotlib
     manager = plt.get_current_fig_manager()
     try:
-        manager.window.wm_geometry(f"{window_width_px}x{window_height_px}+100+100")
-    except Exception as e:
-        print("Erro ao ajustar tamanho da janela:", e)
+        manager.window.wm_geometry(f"{window_width_px}x{window_height_px}+50+50")
+    except Exception:
+        pass
 
-    # Forçar renderização para obter dimensões reais da figura
-    fig.canvas.draw()
-    fig_width_px = fig.bbox.width
-    fig_height_px = fig.bbox.height
-
-    # Fator de escala real baseado na altura da figura
-    scale_factor = fig_height_px / 720
-
-    # Função auxiliar para escalar fontes com limites
+    # Função auxiliar para escalar valores (fontes, etc.)
     def escalar(valor_base):
-        return max(8, min(int(valor_base * scale_factor), 36))
+        return int(valor_base * scale_factor)
 
-    # Ajuste de espaço do título
-    fig.subplots_adjust(top=1 - 0.05 * scale_factor)
+    # Ajustar título e layout
+    fig.subplots_adjust(top=0.92)
 
-    fig.suptitle(
-        "Projeto de Sistematização - Visualização do DXF",
-        fontsize=escalar(28),
-        fontweight='bold',
-        fontname='DejaVu Sans',
-        color='#4CAF50'
-    )
-
+    # Layout com GridSpec: painel do mapa e painel de controle
     gs = gridspec.GridSpec(ncols=2, nrows=1, width_ratios=[4, 1], wspace=0.1)
-
     viewport_ax = fig.add_subplot(gs[0, 0])
     setup_plot(viewport_ax)
     draw_dxf(viewport_ax, dxf_data, visible_layers)
@@ -305,33 +329,27 @@ def launch_gui(file_path):
     control_ax.axis('off')
     control_pos = control_ax.get_position()
 
+    # Tamanhos dos botões e posicionamento (valores relativos não precisam ser escalados, apenas as fontes)
     btn_width = control_pos.width * 0.8
-    btn_height = control_pos.height * 0.08 * scale_factor
+    btn_height = control_pos.height * 0.08
     btn_x = control_pos.x0 + 0.1 * control_pos.width
 
-    # Espaçamento entre botões proporcional
-    botao_topo = control_pos.y0 + control_pos.height * 0.80
-    botao_gap = control_pos.height * 0.11 * scale_factor
-
     # Botão: Redefinir Visualização
-    reset_ax = fig.add_axes([btn_x, botao_topo, btn_width, btn_height])
+    reset_ax = fig.add_axes([btn_x, control_pos.y0 + 0.8 * control_pos.height, btn_width, btn_height])
     reset_button = desenhar_botao_arredondado(reset_ax, "Redefinir Visualização", lambda event: reset_view(event, viewport_ax, fig))
-    reset_button.label.set_color("white")
-    reset_button.label.set_fontsize(escalar(10))
+    reset_button.label.set_fontsize(escalar(11))
 
     # Botão: Medir Distância
-    measure_ax = fig.add_axes([btn_x, botao_topo - botao_gap, btn_width, btn_height])
+    measure_ax = fig.add_axes([btn_x, control_pos.y0 + 0.68 * control_pos.height, btn_width, btn_height])
     measure_button = desenhar_botao_arredondado(measure_ax, "Medir Distância", toggle_measurement_mode)
-    measure_button.label.set_color("white")
-    measure_button.label.set_fontsize(escalar(10))
+    measure_button.label.set_fontsize(escalar(11))
 
     # Botão: Salvar Figura
-    save_ax = fig.add_axes([btn_x, botao_topo - 2 * botao_gap, btn_width, btn_height])
+    save_ax = fig.add_axes([btn_x, control_pos.y0 + 0.56 * control_pos.height, btn_width, btn_height])
     save_button = desenhar_botao_arredondado(save_ax, "Salvar Figura", on_save_button_clicked)
-    save_button.label.set_color("white")
-    save_button.label.set_fontsize(escalar(10))
+    save_button.label.set_fontsize(escalar(11))
 
-    # Checkboxes
+    # Checkboxes para seleção de layers
     check_ax = fig.add_axes([
         control_pos.x0 - 0.01,
         control_pos.y0 + 0.08,
@@ -347,13 +365,9 @@ def launch_gui(file_path):
         pass
 
     for lbl in check.labels:
-        lbl.set_color("white")
         lbl.set_fontsize(escalar(9))
+        lbl.set_color("white")
         lbl.set_fontweight("bold")
-
-    check_ax.set_facecolor("#333333")
-    check_ax.set_alpha(1.0)
-    check._spacing = 0.15
 
     def update_layers(label):
         if label in visible_layers:
@@ -365,7 +379,5 @@ def launch_gui(file_path):
 
     check.on_clicked(update_layers)
     fig.canvas.mpl_connect('button_press_event', on_click_measurement)
-
-    # Redesenha tudo com escalas aplicadas
     fig.canvas.draw()
     plt.show()
