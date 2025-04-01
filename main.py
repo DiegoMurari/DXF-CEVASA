@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import filedialog
-from src.gui import launch_gui
+from ui.gui import launch_gui
 import sys
 
 def abrir_seletor_dxf():

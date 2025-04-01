@@ -10,8 +10,10 @@ import re
 import os
 import tkinter as tk
 from datetime import datetime
-from .dxf_loader import load_dxf
-from .dxf_parser import parse_dxf, calcular_tabelas
+from dxf.dxf_loader import load_dxf
+from dxf.dxf_parser import parse_dxf, calcular_tabelas
+from ui.layout_generator import gerar_layout_final
+from ui.talhoes_parser import extrair_talhoes_por_proximidade, extrair_legenda_layers
 from .layout_generator import gerar_layout_final
 from .talhoes_parser import extrair_talhoes_por_proximidade, extrair_legenda_layers
 from matplotlib.patches import FancyBboxPatch

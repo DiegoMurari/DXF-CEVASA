@@ -2,7 +2,7 @@
 import math
 import ezdxf
 from collections import defaultdict
-from .layout_generator import gerar_layout_final
+from ui.layout_generator import gerar_layout_final  # antes estava errado
 from .dxf_utils import get_entity_color  # NOVO
 import re
 

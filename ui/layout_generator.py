@@ -11,7 +11,7 @@ from openpyxl.styles import Font
 from openpyxl.worksheet.table import Table, TableStyleInfo
 from .layer_selector import selecionar_layers
 from openpyxl.styles import Alignment, Font, PatternFill, Border, Side
-from src.talhoes_parser import extrair_talhoes_por_proximidade,extrair_legenda_layers
+from ui.talhoes_parser import extrair_talhoes_por_proximidade,extrair_legenda_layers
 import win32com.client as win32
 from openpyxl.styles import Font, Alignment
 import matplotlib.pyplot as plt
