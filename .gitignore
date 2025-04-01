@@ -1,0 +1,9 @@
+# Ignorar tudo na pasta build/
+build/
+
+# Ignorar arquivos gerados
+*.toc
+*.pyz
+*.zip
+*.exe
+*.spe
