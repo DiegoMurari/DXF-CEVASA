@@ -175,7 +175,6 @@ imports:
  &#8226;   <a href="#re._constants">re._constants</a>
  &#8226;   <a href="#re._parser">re._parser</a>
  &#8226;   <a href="#reprlib">reprlib</a>
- &#8226;   <a href="#src.gui">src.gui</a>
  &#8226;   <a href="#sre_compile">sre_compile</a>
  &#8226;   <a href="#sre_constants">sre_constants</a>
  &#8226;   <a href="#sre_parse">sre_parse</a>
@@ -185,6 +184,7 @@ imports:
  &#8226;   <a href="#tkinter.filedialog">tkinter.filedialog</a>
  &#8226;   <a href="#traceback">traceback</a>
  &#8226;   <a href="#types">types</a>
+ &#8226;   <a href="#ui.gui">ui.gui</a>
  &#8226;   <a href="#warnings">warnings</a>
  &#8226;   <a href="#weakref">weakref</a>
 
@@ -801,7 +801,7 @@ imported by:
  &#8226;   <a href="#matplotlib.colors">matplotlib.colors</a>
  &#8226;   <a href="#openpyxl.drawing.image">openpyxl.drawing.image</a>
  &#8226;   <a href="#pygments.formatters.img">pygments.formatters.img</a>
- &#8226;   <a href="#src.layout_generator">src.layout_generator</a>
+ &#8226;   <a href="#ui.layout_generator">ui.layout_generator</a>
 
   </div>
 
@@ -1461,7 +1461,7 @@ imported by:
  &#8226;   <a href="#matplotlib.pyplot">matplotlib.pyplot</a>
  &#8226;   <a href="#openpyxl.drawing.image">openpyxl.drawing.image</a>
  &#8226;   <a href="#pygments.formatters.img">pygments.formatters.img</a>
- &#8226;   <a href="#src.layout_generator">src.layout_generator</a>
+ &#8226;   <a href="#ui.layout_generator">ui.layout_generator</a>
 
   </div>
 
@@ -8472,6 +8472,7 @@ imported by:
  &#8226;   <a href="#doctest">doctest</a>
  &#8226;   <a href="#docutils">docutils</a>
  &#8226;   <a href="#docutils.nodes">docutils.nodes</a>
+ &#8226;   <a href="#dxf.dxf_parser">dxf.dxf_parser</a>
  &#8226;   <a href="#email.feedparser">email.feedparser</a>
  &#8226;   <a href="#ezdxf.document">ezdxf.document</a>
  &#8226;   <a href="#ezdxf.entities.mleader">ezdxf.entities.mleader</a>
@@ -8570,7 +8571,6 @@ imported by:
  &#8226;   <a href="#setuptools.config.setupcfg">setuptools.config.setupcfg</a>
  &#8226;   <a href="#shlex">shlex</a>
  &#8226;   <a href="#shutil">shutil</a>
- &#8226;   <a href="#src.dxf_parser">src.dxf_parser</a>
  &#8226;   <a href="#ssl">ssl</a>
  &#8226;   <a href="#statistics">statistics</a>
  &#8226;   <a href="#string">string</a>
@@ -9637,9 +9637,9 @@ imported by:
  &#8226;   <a href="#pyparsing.common">pyparsing.common</a>
  &#8226;   <a href="#setuptools._vendor.tomli._re">setuptools._vendor.tomli._re</a>
  &#8226;   <a href="#setuptools.warnings">setuptools.warnings</a>
- &#8226;   <a href="#src.gui">src.gui</a>
- &#8226;   <a href="#src.layout_generator">src.layout_generator</a>
  &#8226;   <a href="#tomllib._re">tomllib._re</a>
+ &#8226;   <a href="#ui.gui">ui.gui</a>
+ &#8226;   <a href="#ui.layout_generator">ui.layout_generator</a>
  &#8226;   <a href="#win32com.client.build">win32com.client.build</a>
  &#8226;   <a href="#xmlrpc.client">xmlrpc.client</a>
 
@@ -12830,6 +12830,76 @@ imports:
   <div class="import">
 imported by:
     <a href="#docutils">docutils</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="dxf"></a>
+  <a target="code" href="///C:/Users/dmg6387/DXF-CEVASA/dxf/__init__.py" type="text/plain"><tt>dxf</tt></a>
+<span class="moduletype">Package</span>  <div class="import">
+imported by:
+    <a href="#dxf.dxf_loader">dxf.dxf_loader</a>
+ &#8226;   <a href="#dxf.dxf_parser">dxf.dxf_parser</a>
+ &#8226;   <a href="#dxf.dxf_utils">dxf.dxf_utils</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="dxf.dxf_loader"></a>
+  <a target="code" href="///C:/Users/dmg6387/DXF-CEVASA/dxf/dxf_loader.py" type="text/plain"><tt>dxf.dxf_loader</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#dxf">dxf</a>
+ &#8226;   <a href="#ezdxf">ezdxf</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#ui.gui">ui.gui</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="dxf.dxf_parser"></a>
+  <a target="code" href="///C:/Users/dmg6387/DXF-CEVASA/dxf/dxf_parser.py" type="text/plain"><tt>dxf.dxf_parser</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#collections">collections</a>
+ &#8226;   <a href="#dxf">dxf</a>
+ &#8226;   <a href="#dxf.dxf_utils">dxf.dxf_utils</a>
+ &#8226;   <a href="#ezdxf">ezdxf</a>
+ &#8226;   <a href="#math">math</a>
+ &#8226;   <a href="#re">re</a>
+ &#8226;   <a href="#ui.layout_generator">ui.layout_generator</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#ui.gui">ui.gui</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="dxf.dxf_utils"></a>
+  <a target="code" href="///C:/Users/dmg6387/DXF-CEVASA/dxf/dxf_utils.py" type="text/plain"><tt>dxf.dxf_utils</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#dxf">dxf</a>
+ &#8226;   <a href="#ezdxf">ezdxf</a>
+ &#8226;   <a href="#ezdxf.colors">ezdxf.colors</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#dxf.dxf_parser">dxf.dxf_parser</a>
 
   </div>
 
@@ -16065,7 +16135,10 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#ezdxf">ezdxf</a>
+    <a href="#dxf.dxf_loader">dxf.dxf_loader</a>
+ &#8226;   <a href="#dxf.dxf_parser">dxf.dxf_parser</a>
+ &#8226;   <a href="#dxf.dxf_utils">dxf.dxf_utils</a>
+ &#8226;   <a href="#ezdxf">ezdxf</a>
  &#8226;   <a href="#ezdxf._options">ezdxf._options</a>
  &#8226;   <a href="#ezdxf.acc">ezdxf.acc</a>
  &#8226;   <a href="#ezdxf.acis">ezdxf.acis</a>
@@ -16143,8 +16216,6 @@ imported by:
  &#8226;   <a href="#ezdxf.units">ezdxf.units</a>
  &#8226;   <a href="#ezdxf.version">ezdxf.version</a>
  &#8226;   <a href="#ezdxf.xref">ezdxf.xref</a>
- &#8226;   <a href="#src.dxf_loader">src.dxf_loader</a>
- &#8226;   <a href="#src.dxf_parser">src.dxf_parser</a>
 
   </div>
 
@@ -17052,7 +17123,8 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#ezdxf">ezdxf</a>
+    <a href="#dxf.dxf_utils">dxf.dxf_utils</a>
+ &#8226;   <a href="#ezdxf">ezdxf</a>
  &#8226;   <a href="#ezdxf.entities.dxfgfx">ezdxf.entities.dxfgfx</a>
  &#8226;   <a href="#ezdxf.entities.gradient">ezdxf.entities.gradient</a>
  &#8226;   <a href="#ezdxf.entities.hatch">ezdxf.entities.hatch</a>
@@ -17066,7 +17138,6 @@ imported by:
  &#8226;   <a href="#ezdxf.render.abstract_mtext_renderer">ezdxf.render.abstract_mtext_renderer</a>
  &#8226;   <a href="#ezdxf.render.mleader">ezdxf.render.mleader</a>
  &#8226;   <a href="#ezdxf.tools.text">ezdxf.tools.text</a>
- &#8226;   <a href="#src.dxf_parser">src.dxf_parser</a>
 
   </div>
 
@@ -34504,6 +34575,7 @@ imported by:
  &#8226;   <a href="#contourpy.chunk">contourpy.chunk</a>
  &#8226;   <a href="#dateutil.relativedelta">dateutil.relativedelta</a>
  &#8226;   <a href="#dateutil.rrule">dateutil.rrule</a>
+ &#8226;   <a href="#dxf.dxf_parser">dxf.dxf_parser</a>
  &#8226;   <a href="#ezdxf.acis.sab">ezdxf.acis.sab</a>
  &#8226;   <a href="#ezdxf.acis.sat">ezdxf.acis.sat</a>
  &#8226;   <a href="#ezdxf.addons.dimlines">ezdxf.addons.dimlines</a>
@@ -34617,10 +34689,9 @@ imported by:
  &#8226;   <a href="#selectors">selectors</a>
  &#8226;   <a href="#setuptools._vendor.more_itertools.more">setuptools._vendor.more_itertools.more</a>
  &#8226;   <a href="#setuptools._vendor.more_itertools.recipes">setuptools._vendor.more_itertools.recipes</a>
- &#8226;   <a href="#src.dxf_parser">src.dxf_parser</a>
- &#8226;   <a href="#src.gui">src.gui</a>
- &#8226;   <a href="#src.talhoes_parser">src.talhoes_parser</a>
  &#8226;   <a href="#statistics">statistics</a>
+ &#8226;   <a href="#ui.gui">ui.gui</a>
+ &#8226;   <a href="#ui.talhoes_parser">ui.talhoes_parser</a>
  &#8226;   <a href="#urllib.parse">urllib.parse</a>
 
   </div>
@@ -34800,7 +34871,7 @@ imported by:
  &#8226;   <a href="#mpl_toolkits.mplot3d.axes3d">mpl_toolkits.mplot3d.axes3d</a>
  &#8226;   <a href="#mpl_toolkits.mplot3d.axis3d">mpl_toolkits.mplot3d.axis3d</a>
  &#8226;   <a href="#mpl_toolkits.mplot3d.proj3d">mpl_toolkits.mplot3d.proj3d</a>
- &#8226;   <a href="#src.gui">src.gui</a>
+ &#8226;   <a href="#ui.gui">ui.gui</a>
 
   </div>
 
@@ -36643,7 +36714,7 @@ imported by:
     <a href="#matplotlib.axes._base">matplotlib.axes._base</a>
  &#8226;   <a href="#matplotlib.figure">matplotlib.figure</a>
  &#8226;   <a href="#matplotlib.pyplot">matplotlib.pyplot</a>
- &#8226;   <a href="#src.gui">src.gui</a>
+ &#8226;   <a href="#ui.gui">ui.gui</a>
 
   </div>
 
@@ -37022,7 +37093,7 @@ imported by:
  &#8226;   <a href="#mpl_toolkits.mplot3d.art3d">mpl_toolkits.mplot3d.art3d</a>
  &#8226;   <a href="#mpl_toolkits.mplot3d.axes3d">mpl_toolkits.mplot3d.axes3d</a>
  &#8226;   <a href="#mpl_toolkits.mplot3d.axis3d">mpl_toolkits.mplot3d.axis3d</a>
- &#8226;   <a href="#src.gui">src.gui</a>
+ &#8226;   <a href="#ui.gui">ui.gui</a>
 
   </div>
 
@@ -37256,7 +37327,8 @@ imported by:
  &#8226;   <a href="#matplotlib.backends.backend_webagg_core">matplotlib.backends.backend_webagg_core</a>
  &#8226;   <a href="#matplotlib.figure">matplotlib.figure</a>
  &#8226;   <a href="#matplotlib.image">matplotlib.image</a>
- &#8226;   <a href="#src.gui">src.gui</a>
+ &#8226;   <a href="#ui.gui">ui.gui</a>
+ &#8226;   <a href="#ui.layout_generator">ui.layout_generator</a>
 
   </div>
 
@@ -37986,7 +38058,7 @@ imported by:
     <a href="#matplotlib.backend_bases">matplotlib.backend_bases</a>
  &#8226;   <a href="#matplotlib.backend_managers">matplotlib.backend_managers</a>
  &#8226;   <a href="#matplotlib.pyplot">matplotlib.pyplot</a>
- &#8226;   <a href="#src.gui">src.gui</a>
+ &#8226;   <a href="#ui.gui">ui.gui</a>
 
   </div>
 
@@ -45937,7 +46009,7 @@ imported by:
  &#8226;   <a href="#openpyxl.writer">openpyxl.writer</a>
  &#8226;   <a href="#openpyxl.xml">openpyxl.xml</a>
  &#8226;   <a href="#openpyxl.xml.functions">openpyxl.xml.functions</a>
- &#8226;   <a href="#src.layout_generator">src.layout_generator</a>
+ &#8226;   <a href="#ui.layout_generator">ui.layout_generator</a>
 
   </div>
 
@@ -48109,7 +48181,7 @@ imports:
 imported by:
     <a href="#openpyxl.drawing.spreadsheet_drawing">openpyxl.drawing.spreadsheet_drawing</a>
  &#8226;   <a href="#openpyxl.reader.drawings">openpyxl.reader.drawings</a>
- &#8226;   <a href="#src.layout_generator">src.layout_generator</a>
+ &#8226;   <a href="#ui.layout_generator">ui.layout_generator</a>
 
   </div>
 
@@ -48873,7 +48945,7 @@ imported by:
  &#8226;   <a href="#openpyxl.styles.styleable">openpyxl.styles.styleable</a>
  &#8226;   <a href="#openpyxl.styles.stylesheet">openpyxl.styles.stylesheet</a>
  &#8226;   <a href="#openpyxl.styles.table">openpyxl.styles.table</a>
- &#8226;   <a href="#src.layout_generator">src.layout_generator</a>
+ &#8226;   <a href="#ui.layout_generator">ui.layout_generator</a>
 
   </div>
 
@@ -49298,7 +49370,7 @@ imported by:
  &#8226;   <a href="#openpyxl.worksheet.print_settings">openpyxl.worksheet.print_settings</a>
  &#8226;   <a href="#openpyxl.worksheet.table">openpyxl.worksheet.table</a>
  &#8226;   <a href="#openpyxl.worksheet.worksheet">openpyxl.worksheet.worksheet</a>
- &#8226;   <a href="#src.layout_generator">src.layout_generator</a>
+ &#8226;   <a href="#ui.layout_generator">ui.layout_generator</a>
 
   </div>
 
@@ -50377,7 +50449,7 @@ imported by:
  &#8226;   <a href="#openpyxl.worksheet._reader">openpyxl.worksheet._reader</a>
  &#8226;   <a href="#openpyxl.worksheet._writer">openpyxl.worksheet._writer</a>
  &#8226;   <a href="#openpyxl.worksheet.worksheet">openpyxl.worksheet.worksheet</a>
- &#8226;   <a href="#src.layout_generator">src.layout_generator</a>
+ &#8226;   <a href="#ui.layout_generator">ui.layout_generator</a>
 
   </div>
 
@@ -51033,8 +51105,6 @@ imported by:
  &#8226;   <a href="#site">site</a>
  &#8226;   <a href="#socket">socket</a>
  &#8226;   <a href="#socketserver">socketserver</a>
- &#8226;   <a href="#src.gui">src.gui</a>
- &#8226;   <a href="#src.layout_generator">src.layout_generator</a>
  &#8226;   <a href="#ssl">ssl</a>
  &#8226;   <a href="#subprocess">subprocess</a>
  &#8226;   <a href="#sysconfig">sysconfig</a>
@@ -51044,6 +51114,8 @@ imported by:
  &#8226;   <a href="#timeit">timeit</a>
  &#8226;   <a href="#tkinter">tkinter</a>
  &#8226;   <a href="#tkinter.filedialog">tkinter.filedialog</a>
+ &#8226;   <a href="#ui.gui">ui.gui</a>
+ &#8226;   <a href="#ui.layout_generator">ui.layout_generator</a>
  &#8226;   <a href="#unittest.loader">unittest.loader</a>
  &#8226;   <a href="#unittest.main">unittest.main</a>
  &#8226;   <a href="#urllib.request">urllib.request</a>
@@ -60831,6 +60903,7 @@ imported by:
  &#8226;   <a href="#docutils.writers.manpage">docutils.writers.manpage</a>
  &#8226;   <a href="#docutils.writers.odf_odt">docutils.writers.odf_odt</a>
  &#8226;   <a href="#docutils.writers.s5_html">docutils.writers.s5_html</a>
+ &#8226;   <a href="#dxf.dxf_parser">dxf.dxf_parser</a>
  &#8226;   <a href="#email._encoded_words">email._encoded_words</a>
  &#8226;   <a href="#email._header_value_parser">email._header_value_parser</a>
  &#8226;   <a href="#email.feedparser">email.feedparser</a>
@@ -61114,9 +61187,6 @@ imported by:
  &#8226;   <a href="#setuptools.wheel">setuptools.wheel</a>
  &#8226;   <a href="#shiboken6">shiboken6</a>
  &#8226;   <a href="#shlex">shlex</a>
- &#8226;   <a href="#src.dxf_parser">src.dxf_parser</a>
- &#8226;   <a href="#src.gui">src.gui</a>
- &#8226;   <a href="#src.talhoes_parser">src.talhoes_parser</a>
  &#8226;   <a href="#sre_compile">sre_compile</a>
  &#8226;   <a href="#sre_constants">sre_constants</a>
  &#8226;   <a href="#sre_parse">sre_parse</a>
@@ -61128,6 +61198,8 @@ imported by:
  &#8226;   <a href="#tokenize">tokenize</a>
  &#8226;   <a href="#tomllib._re">tomllib._re</a>
  &#8226;   <a href="#typing">typing</a>
+ &#8226;   <a href="#ui.gui">ui.gui</a>
+ &#8226;   <a href="#ui.talhoes_parser">ui.talhoes_parser</a>
  &#8226;   <a href="#unittest.case">unittest.case</a>
  &#8226;   <a href="#unittest.loader">unittest.loader</a>
  &#8226;   <a href="#urllib.parse">urllib.parse</a>
@@ -65520,164 +65592,6 @@ imported by:
 </div>
 
 <div class="node">
-  <a name="src"></a>
-  <a target="code" href="///C:/Users/dmg6387/DXF-CEVASA/src/__init__.py" type="text/plain"><tt>src</tt></a>
-<span class="moduletype">Package</span>  <div class="import">
-imported by:
-    <a href="#src.dxf_loader">src.dxf_loader</a>
- &#8226;   <a href="#src.dxf_parser">src.dxf_parser</a>
- &#8226;   <a href="#src.gui">src.gui</a>
- &#8226;   <a href="#src.layer_selector">src.layer_selector</a>
- &#8226;   <a href="#src.layout_generator">src.layout_generator</a>
- &#8226;   <a href="#src.talhoes_parser">src.talhoes_parser</a>
-
-  </div>
-
-</div>
-
-<div class="node">
-  <a name="src.dxf_loader"></a>
-  <a target="code" href="///C:/Users/dmg6387/DXF-CEVASA/src/dxf_loader.py" type="text/plain"><tt>src.dxf_loader</tt></a>
-<span class="moduletype">SourceModule</span>  <div class="import">
-imports:
-    <a href="#ezdxf">ezdxf</a>
- &#8226;   <a href="#src">src</a>
-
-  </div>
-  <div class="import">
-imported by:
-    <a href="#src.gui">src.gui</a>
- &#8226;   <a href="#src.layout_generator">src.layout_generator</a>
-
-  </div>
-
-</div>
-
-<div class="node">
-  <a name="src.dxf_parser"></a>
-  <a target="code" href="///C:/Users/dmg6387/DXF-CEVASA/src/dxf_parser.py" type="text/plain"><tt>src.dxf_parser</tt></a>
-<span class="moduletype">SourceModule</span>  <div class="import">
-imports:
-    <a href="#collections">collections</a>
- &#8226;   <a href="#ezdxf">ezdxf</a>
- &#8226;   <a href="#ezdxf.colors">ezdxf.colors</a>
- &#8226;   <a href="#math">math</a>
- &#8226;   <a href="#re">re</a>
- &#8226;   <a href="#src">src</a>
- &#8226;   <a href="#src.layout_generator">src.layout_generator</a>
-
-  </div>
-  <div class="import">
-imported by:
-    <a href="#src.gui">src.gui</a>
- &#8226;   <a href="#src.layout_generator">src.layout_generator</a>
-
-  </div>
-
-</div>
-
-<div class="node">
-  <a name="src.gui"></a>
-  <a target="code" href="///C:/Users/dmg6387/DXF-CEVASA/src/gui.py" type="text/plain"><tt>src.gui</tt></a>
-<span class="moduletype">SourceModule</span>  <div class="import">
-imports:
-    <a href="#datetime">datetime</a>
- &#8226;   <a href="#math">math</a>
- &#8226;   <a href="#matplotlib">matplotlib</a>
- &#8226;   <a href="#matplotlib.gridspec">matplotlib.gridspec</a>
- &#8226;   <a href="#matplotlib.patches">matplotlib.patches</a>
- &#8226;   <a href="#matplotlib.pyplot">matplotlib.pyplot</a>
- &#8226;   <a href="#matplotlib.widgets">matplotlib.widgets</a>
- &#8226;   <a href="#os">os</a>
- &#8226;   <a href="#re">re</a>
- &#8226;   <a href="#src">src</a>
- &#8226;   <a href="#src.dxf_loader">src.dxf_loader</a>
- &#8226;   <a href="#src.dxf_parser">src.dxf_parser</a>
- &#8226;   <a href="#src.layout_generator">src.layout_generator</a>
- &#8226;   <a href="#src.talhoes_parser">src.talhoes_parser</a>
- &#8226;   <a href="#sys">sys</a>
-
-  </div>
-  <div class="import">
-imported by:
-    <a href="#main.py">main.py</a>
-
-  </div>
-
-</div>
-
-<div class="node">
-  <a name="src.layer_selector"></a>
-  <a target="code" href="///C:/Users/dmg6387/DXF-CEVASA/src/layer_selector.py" type="text/plain"><tt>src.layer_selector</tt></a>
-<span class="moduletype">SourceModule</span>  <div class="import">
-imports:
-    <a href="#src">src</a>
- &#8226;   <a href="#tkinter">tkinter</a>
-
-  </div>
-  <div class="import">
-imported by:
-    <a href="#src.layout_generator">src.layout_generator</a>
-
-  </div>
-
-</div>
-
-<div class="node">
-  <a name="src.layout_generator"></a>
-  <a target="code" href="///C:/Users/dmg6387/DXF-CEVASA/src/layout_generator.py" type="text/plain"><tt>src.layout_generator</tt></a>
-<span class="moduletype">SourceModule</span>  <div class="import">
-imports:
-    <a href="#PIL">PIL</a>
- &#8226;   <a href="#PIL.Image">PIL.Image</a>
- &#8226;   <a href="#datetime">datetime</a>
- &#8226;   <a href="#openpyxl">openpyxl</a>
- &#8226;   <a href="#openpyxl.drawing.image">openpyxl.drawing.image</a>
- &#8226;   <a href="#openpyxl.styles">openpyxl.styles</a>
- &#8226;   <a href="#openpyxl.utils">openpyxl.utils</a>
- &#8226;   <a href="#openpyxl.worksheet.table">openpyxl.worksheet.table</a>
- &#8226;   <a href="#os">os</a>
- &#8226;   <a href="#src">src</a>
- &#8226;   <a href="#src.dxf_loader">src.dxf_loader</a>
- &#8226;   <a href="#src.dxf_parser">src.dxf_parser</a>
- &#8226;   <a href="#src.layer_selector">src.layer_selector</a>
- &#8226;   <a href="#src.talhoes_parser">src.talhoes_parser</a>
- &#8226;   <a href="#sys">sys</a>
- &#8226;   <a href="#tkinter">tkinter</a>
- &#8226;   <a href="#tkinter.messagebox">tkinter.messagebox</a>
- &#8226;   <a href="#tkinter.simpledialog">tkinter.simpledialog</a>
- &#8226;   <a href="#win32com.client">win32com.client</a>
-
-  </div>
-  <div class="import">
-imported by:
-    <a href="#src.dxf_parser">src.dxf_parser</a>
- &#8226;   <a href="#src.gui">src.gui</a>
-
-  </div>
-
-</div>
-
-<div class="node">
-  <a name="src.talhoes_parser"></a>
-  <a target="code" href="///C:/Users/dmg6387/DXF-CEVASA/src/talhoes_parser.py" type="text/plain"><tt>src.talhoes_parser</tt></a>
-<span class="moduletype">SourceModule</span>  <div class="import">
-imports:
-    <a href="#math">math</a>
- &#8226;   <a href="#re">re</a>
- &#8226;   <a href="#src">src</a>
-
-  </div>
-  <div class="import">
-imported by:
-    <a href="#src.gui">src.gui</a>
- &#8226;   <a href="#src.layout_generator">src.layout_generator</a>
-
-  </div>
-
-</div>
-
-<div class="node">
   <a name="sre_compile"></a>
   <a target="code" href="///C:/Users/dmg6387/AppData/Local/Programs/Python/Python313/Lib/sre_compile.py" type="text/plain"><tt>sre_compile</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
@@ -66397,8 +66311,6 @@ imported by:
  &#8226;   <a href="#six">six</a>
  &#8226;   <a href="#socket">socket</a>
  &#8226;   <a href="#socketserver">socketserver</a>
- &#8226;   <a href="#src.gui">src.gui</a>
- &#8226;   <a href="#src.layout_generator">src.layout_generator</a>
  &#8226;   <a href="#ssl">ssl</a>
  &#8226;   <a href="#statistics">statistics</a>
  &#8226;   <a href="#subprocess">subprocess</a>
@@ -66413,6 +66325,8 @@ imported by:
  &#8226;   <a href="#types">types</a>
  &#8226;   <a href="#typing">typing</a>
  &#8226;   <a href="#typing_extensions">typing_extensions</a>
+ &#8226;   <a href="#ui.gui">ui.gui</a>
+ &#8226;   <a href="#ui.layout_generator">ui.layout_generator</a>
  &#8226;   <a href="#unittest.case">unittest.case</a>
  &#8226;   <a href="#unittest.loader">unittest.loader</a>
  &#8226;   <a href="#unittest.main">unittest.main</a>
@@ -66853,8 +66767,6 @@ imports:
 imported by:
     <a href="#main.py">main.py</a>
  &#8226;   <a href="#matplotlib.backends._backend_tk">matplotlib.backends._backend_tk</a>
- &#8226;   <a href="#src.layer_selector">src.layer_selector</a>
- &#8226;   <a href="#src.layout_generator">src.layout_generator</a>
  &#8226;   <a href="#tkinter.commondialog">tkinter.commondialog</a>
  &#8226;   <a href="#tkinter.constants">tkinter.constants</a>
  &#8226;   <a href="#tkinter.dialog">tkinter.dialog</a>
@@ -66862,6 +66774,9 @@ imported by:
  &#8226;   <a href="#tkinter.font">tkinter.font</a>
  &#8226;   <a href="#tkinter.messagebox">tkinter.messagebox</a>
  &#8226;   <a href="#tkinter.simpledialog">tkinter.simpledialog</a>
+ &#8226;   <a href="#ui.gui">ui.gui</a>
+ &#8226;   <a href="#ui.layer_selector">ui.layer_selector</a>
+ &#8226;   <a href="#ui.layout_generator">ui.layout_generator</a>
 
   </div>
 
@@ -66970,9 +66885,9 @@ imports:
   <div class="import">
 imported by:
     <a href="#matplotlib.backends._backend_tk">matplotlib.backends._backend_tk</a>
- &#8226;   <a href="#src.layout_generator">src.layout_generator</a>
  &#8226;   <a href="#tkinter">tkinter</a>
  &#8226;   <a href="#tkinter.simpledialog">tkinter.simpledialog</a>
+ &#8226;   <a href="#ui.layout_generator">ui.layout_generator</a>
 
   </div>
 
@@ -66990,8 +66905,8 @@ imports:
   <div class="import">
 imported by:
     <a href="#matplotlib.backends._backend_tk">matplotlib.backends._backend_tk</a>
- &#8226;   <a href="#src.layout_generator">src.layout_generator</a>
  &#8226;   <a href="#tkinter.filedialog">tkinter.filedialog</a>
+ &#8226;   <a href="#ui.layout_generator">ui.layout_generator</a>
 
   </div>
 
@@ -68021,6 +67936,121 @@ imported by:
 <span class="moduletype">MissingModule</span>  <div class="import">
 imported by:
     <a href="#fontTools.ttLib.tables.otBase">fontTools.ttLib.tables.otBase</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="ui"></a>
+  <a target="code" href="///C:/Users/dmg6387/DXF-CEVASA/ui/__init__.py" type="text/plain"><tt>ui</tt></a>
+<span class="moduletype">Package</span>  <div class="import">
+imported by:
+    <a href="#ui.gui">ui.gui</a>
+ &#8226;   <a href="#ui.layer_selector">ui.layer_selector</a>
+ &#8226;   <a href="#ui.layout_generator">ui.layout_generator</a>
+ &#8226;   <a href="#ui.talhoes_parser">ui.talhoes_parser</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="ui.gui"></a>
+  <a target="code" href="///C:/Users/dmg6387/DXF-CEVASA/ui/gui.py" type="text/plain"><tt>ui.gui</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#datetime">datetime</a>
+ &#8226;   <a href="#dxf.dxf_loader">dxf.dxf_loader</a>
+ &#8226;   <a href="#dxf.dxf_parser">dxf.dxf_parser</a>
+ &#8226;   <a href="#math">math</a>
+ &#8226;   <a href="#matplotlib">matplotlib</a>
+ &#8226;   <a href="#matplotlib.gridspec">matplotlib.gridspec</a>
+ &#8226;   <a href="#matplotlib.patches">matplotlib.patches</a>
+ &#8226;   <a href="#matplotlib.pyplot">matplotlib.pyplot</a>
+ &#8226;   <a href="#matplotlib.widgets">matplotlib.widgets</a>
+ &#8226;   <a href="#os">os</a>
+ &#8226;   <a href="#re">re</a>
+ &#8226;   <a href="#sys">sys</a>
+ &#8226;   <a href="#tkinter">tkinter</a>
+ &#8226;   <a href="#ui">ui</a>
+ &#8226;   <a href="#ui.layout_generator">ui.layout_generator</a>
+ &#8226;   <a href="#ui.talhoes_parser">ui.talhoes_parser</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#main.py">main.py</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="ui.layer_selector"></a>
+  <a target="code" href="///C:/Users/dmg6387/DXF-CEVASA/ui/layer_selector.py" type="text/plain"><tt>ui.layer_selector</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#tkinter">tkinter</a>
+ &#8226;   <a href="#ui">ui</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#ui.layout_generator">ui.layout_generator</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="ui.layout_generator"></a>
+  <a target="code" href="///C:/Users/dmg6387/DXF-CEVASA/ui/layout_generator.py" type="text/plain"><tt>ui.layout_generator</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#PIL">PIL</a>
+ &#8226;   <a href="#PIL.Image">PIL.Image</a>
+ &#8226;   <a href="#datetime">datetime</a>
+ &#8226;   <a href="#matplotlib.pyplot">matplotlib.pyplot</a>
+ &#8226;   <a href="#openpyxl">openpyxl</a>
+ &#8226;   <a href="#openpyxl.drawing.image">openpyxl.drawing.image</a>
+ &#8226;   <a href="#openpyxl.styles">openpyxl.styles</a>
+ &#8226;   <a href="#openpyxl.utils">openpyxl.utils</a>
+ &#8226;   <a href="#openpyxl.worksheet.table">openpyxl.worksheet.table</a>
+ &#8226;   <a href="#os">os</a>
+ &#8226;   <a href="#sys">sys</a>
+ &#8226;   <a href="#tkinter">tkinter</a>
+ &#8226;   <a href="#tkinter.messagebox">tkinter.messagebox</a>
+ &#8226;   <a href="#tkinter.simpledialog">tkinter.simpledialog</a>
+ &#8226;   <a href="#ui">ui</a>
+ &#8226;   <a href="#ui.layer_selector">ui.layer_selector</a>
+ &#8226;   <a href="#ui.talhoes_parser">ui.talhoes_parser</a>
+ &#8226;   <a href="#win32com.client">win32com.client</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#dxf.dxf_parser">dxf.dxf_parser</a>
+ &#8226;   <a href="#ui.gui">ui.gui</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="ui.talhoes_parser"></a>
+  <a target="code" href="///C:/Users/dmg6387/DXF-CEVASA/ui/talhoes_parser.py" type="text/plain"><tt>ui.talhoes_parser</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#math">math</a>
+ &#8226;   <a href="#re">re</a>
+ &#8226;   <a href="#ui">ui</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#ui.gui">ui.gui</a>
+ &#8226;   <a href="#ui.layout_generator">ui.layout_generator</a>
 
   </div>
 
@@ -69523,7 +69553,7 @@ imports:
   <div class="import">
 imported by:
     <a href="#create_shortcut">create_shortcut</a>
- &#8226;   <a href="#src.layout_generator">src.layout_generator</a>
+ &#8226;   <a href="#ui.layout_generator">ui.layout_generator</a>
  &#8226;   <a href="#win32com.client">win32com.client</a>
  &#8226;   <a href="#win32com.client.CLSIDToClass">win32com.client.CLSIDToClass</a>
  &#8226;   <a href="#win32com.client.build">win32com.client.build</a>

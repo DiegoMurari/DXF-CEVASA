@@ -1,42 +1,59 @@
 # -*- mode: python ; coding: utf-8 -*-
 
-block_cipher = None
+import os
+from PyInstaller.utils.hooks import collect_submodules
 
-a = Analysis(
-    ['main.py'],  # Nome do arquivo principal
-    pathex=['.'],
-    binaries=[],
-    datas=[
+project_name = "DXF-CEVASA"
+icon_file = "icon.ico"
+
+# Arquivos de dados (ex: templates, ícones)
+datas = [
     ('resources/excel/Planilha_template.xlsx', 'resources/excel'),
     ('icon.ico', '.'),
-    ('create_shortcut.py', '.'),  # <- aqui
-    ],
-    hiddenimports=[],
+    ('last_desenhista.txt', '.')
+]
+
+# Inclui todos os submódulos
+hiddenimports = collect_submodules("ui") + collect_submodules("dxf")
+
+a = Analysis(
+    ['main.py'],
+    pathex=[os.path.abspath('.')],
+    binaries=[],
+    datas=datas,
+    hiddenimports=hiddenimports,
     hookspath=[],
-    hooksconfig={},
     runtime_hooks=[],
     excludes=[],
     win_no_prefer_redirects=False,
     win_private_assemblies=False,
-    cipher=block_cipher,
+    cipher=None,
+    noarchive=False
 )
 
-pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
+pyz = PYZ(a.pure, a.zipped_data, cipher=None)
 
 exe = EXE(
     pyz,
     a.scripts,
-    a.binaries,
-    a.zipfiles,
-    a.datas,
     [],
-    name='DXF-CEVASA',
+    exclude_binaries=True,
+    name=project_name,
+    icon=icon_file,
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
+    console=False  # True se quiser console; False para só GUI
+)
+
+coll = COLLECT(
+    exe,
+    a.binaries,
+    a.zipfiles,
+    a.datas,
+    strip=False,
+    upx=True,
     upx_exclude=[],
-    runtime_tmpdir=None,
-    console=False,  # ← Isto oculta o terminal
-    icon='icon.ico'  # ← Ícone do executável
+    name=project_name
 )

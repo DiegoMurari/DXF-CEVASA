@@ -1,7 +1,6 @@
-
 # 📐 DXF - CEVASA
 
-Sistema completo para visualização, medição e geração automática de planilhas e relatórios a partir de arquivos DXF, voltado para projetos de sistematização agrícola (cana-de-açúcar).
+O sistema é uma solução especializada desenvolvida para simplificar e automatizar o processamento de arquivos DXF (formato padrão utilizado por softwares de desenho técnico, como AutoCAD), com o objetivo de gerar relatórios e planilhas detalhadas e precisas para projetos de sistematização agrícola, especialmente para o plantio.
 
 ---
 
@@ -24,7 +23,7 @@ Sistema completo para visualização, medição e geração automática de plani
 ## 🖥️ Interface Inicial
 
 <p align="center">
-  <img src="docs/interface_inicial.png" alt="Interface Inicial" width="300">
+  <img src="docs/layout_excel_mapa.png" alt="Interface Inicial" width="300">
 </p>
 
 Tela de entrada do sistema. Ao clicar em **“Selecionar DXF”**, você escolhe o arquivo topográfico a ser processado.
@@ -52,10 +51,24 @@ Antes de gerar a planilha, o sistema permite selecionar **quais layers devem ser
 
 ---
 
+---
+
+## ✅ Preencher excel
+
+<p align="center">
+  <img src="docs/informações_planilha.png" alt="Preencher excel" width="400">
+</p>
+
+Apos confirmar os filtros, o sistema apresenta essa janela **para inserir as informações na planilha**.
+
+O campo desenhista sempre vai salvar o ultimo nome inserido para agilizar o preenchimento.
+
+---
+
 ## 📄 Mapa e Legenda Gerados na Planilha
 
 <p align="center">
-  <img src="docs/layout_excel_mapa.png" alt="Mapa na Planilha" width="700">
+  <img src="docs/interface_inicial.png" alt="Mapa na Planilha" width="700">
 </p>
 
 A planilha gerada inclui:
