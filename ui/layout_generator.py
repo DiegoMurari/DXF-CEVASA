@@ -15,8 +15,17 @@ from ui.talhoes_parser import extrair_talhoes_por_proximidade,extrair_legenda_la
 import win32com.client as win32
 from openpyxl.styles import Font, Alignment
 import matplotlib.pyplot as plt
+from PySide6.QtWidgets import QApplication
+from ui.excel_viewer import PDFViewer
+import subprocess
+from openpyxl.drawing.image import Image as XLImage
+from openpyxl.drawing.spreadsheet_drawing import AnchorMarker, OneCellAnchor
+from openpyxl.utils import column_index_from_string
+from PIL import Image as PILImage
+from ui.imagem_utils import redimensionar_imagem, gerar_imagem_centrada, inserir_imagem
+from openpyxl.worksheet.page import PageMargins
 
-MAX_DESENHISTA = 24  # Limite máximo para o nome do DESENHISTA
+MAX_DESENHISTA = 60  # Limite máximo para o nome do DESENHISTA
 
 def ask_limited_string(prompt, limit=MAX_DESENHISTA):
     def validate_input(P):
@@ -50,24 +59,16 @@ def ask_limited_string(prompt, limit=MAX_DESENHISTA):
     dlg.wait_window()
 
     return result
-def excel_to_pdf(excel_path, pdf_path):
-    """
-    Converte um arquivo Excel para PDF utilizando o Microsoft Excel via COM.
-    Requer que o Excel esteja instalado no sistema (funciona apenas no Windows).
-    """
-    excel = win32.Dispatch("Excel.Application")
-    excel.Visible = False
+
+def imagem_para_pdf(imagem_path, pdf_path):
     try:
-        # Abre o workbook
-        workbook = excel.Workbooks.Open(os.path.abspath(excel_path))
-        # Exporta como PDF (0 indica PDF)
-        workbook.ExportAsFixedFormat(0, os.path.abspath(pdf_path))
-        workbook.Close(False)
-        print(f"✅ Planilha convertida para PDF: {pdf_path}")
+        image = Image.open(imagem_path).convert("RGB")
+        image.save(pdf_path, "PDF", resolution=100.0)
+        print(f"✅ PDF gerado a partir da imagem: {pdf_path}")
+        return True
     except Exception as e:
-        print(f"❌ Erro ao converter Excel para PDF: {e}")
-    finally:
-        excel.Quit()
+        print(f"❌ Erro ao gerar PDF: {e}")
+        return False
 
 def set_cell_value(ws, cell_coord, value):
     for merged_range in ws.merged_cells.ranges:
@@ -76,6 +77,71 @@ def set_cell_value(ws, cell_coord, value):
             ws[anchor].value = value
             return
     ws[cell_coord].value = value
+
+def converter_excel_para_pdf_com_libreoffice(excel_path):
+    """
+    Converte um arquivo .xlsx para .pdf usando LibreOffice Portable.
+    """
+    try:
+        # Caminho correto para o executável interno da versão portátil
+        libreoffice_path = r"C:\Users\dmg6387\Downloads\LibreOfficePortable\App\libreoffice\program\soffice.exe"
+
+        if not os.path.exists(libreoffice_path):
+            raise FileNotFoundError("❌ LibreOffice Portable não encontrado no caminho especificado.")
+
+        excel_path = os.path.abspath(excel_path)
+        output_dir = os.path.dirname(excel_path)
+
+        # Comando para conversão
+        subprocess.run([
+            libreoffice_path,
+            "--headless",
+            "--convert-to", "pdf",
+            "--outdir", output_dir,
+            excel_path
+        ], check=True)
+
+        pdf_path = excel_path.replace(".xlsx", ".pdf")
+        print(f"✅ PDF gerado com sucesso: {pdf_path}")
+        print(f"Arquivo PDF esperado: {pdf_path}")
+        print(f"Existe? {os.path.exists(pdf_path)}")
+        return pdf_path
+
+    except Exception as e:
+        print(f"❌ Erro ao converter Excel para PDF: {e}")
+        return None
+
+    except Exception as e:
+        print(f"❌ Erro na conversão para PDF: {e}")
+        return None
+
+def preparar_planilha_para_pdf(wb, escalas_por_aba=None, escala_padrao=75, print_areas=None):
+    """
+    Configura as abas para exportação em PDF centralizado.
+    """
+    if escalas_por_aba is None:
+        escalas_por_aba = {}
+    if print_areas is None:
+        print_areas = {}
+
+    for ws in wb.worksheets:
+        escala = escalas_por_aba.get(ws.title, escala_padrao)
+        area = print_areas.get(ws.title)
+
+        ws.page_margins = PageMargins(
+            left=0.3, right=0.3, top=0.4, bottom=0.4,
+            header=0.0, footer=0.0
+        )
+        ws.page_setup.orientation = ws.ORIENTATION_LANDSCAPE
+        ws.page_setup.scale = escala
+        ws.page_setup.fitToWidth = False
+        ws.page_setup.fitToHeight = False
+
+        ws.page_setup.horizontalCentered = True
+        ws.page_setup.verticalCentered = True
+
+        if area:
+            ws.print_area = area
 
 def adicionar_legenda_layers(ws, legenda_layers, start_row=1, start_col=1):
     """
@@ -125,6 +191,18 @@ def redimensionar_imagem(imagem_path, largura, altura):
             print("✅ Imagem redimensionada para:", resized_img.size)
     except Exception as e:
         print(f"❌ Erro ao redimensionar imagem: {e}")
+
+def limpar_colunas_fora_do_layout(ws, ultima_coluna_valida="K"):
+    col_idx = openpyxl.utils.column_index_from_string(ultima_coluna_valida)
+    for i in range(col_idx + 1, 100):  # limpa colunas de L até CV
+        col = get_column_letter(i)
+        if col in ws.column_dimensions:
+            del ws.column_dimensions[col]
+
+def limpar_linhas_fora_do_layout(ws, ultima_linha_valida=33):
+    for i in range(ultima_linha_valida + 1, 200):  # limpa linhas 34 em diante
+        if i in ws.row_dimensions:
+            del ws.row_dimensions[i]
 
 def adicionar_tabela_comprimentos_custom(ws, layer_data, start_row=1, start_col=1):
     # --------------------------
@@ -338,7 +416,7 @@ def gerar_layout_final(dxf_file_path, layer_data, talhoes_dict, legenda_layers):
         nome_excel = f"{nome_dxf}_V{versao}.xlsx"
         
         return nome_excel
-
+    
     def centralizar_imagem_na_planilha(ws, imagem_path, cell_coord="E20"):
         from openpyxl.utils import get_column_letter
         from openpyxl.drawing.image import Image as XLImage
@@ -357,6 +435,7 @@ def gerar_layout_final(dxf_file_path, layer_data, talhoes_dict, legenda_layers):
             print(f"✅ Imagem inserida na planilha na célula {cell_coord}")
         except Exception as e:
             print(f"❌ Erro ao inserir imagem na planilha: {e}")
+            
     def abrir_tela_informacoes(parent):
         import tkinter as tk
         from tkinter import messagebox
@@ -497,21 +576,80 @@ def gerar_layout_final(dxf_file_path, layer_data, talhoes_dict, legenda_layers):
         print("❌ As abas 'Pagina1' ou 'Pagina2' não foram encontradas no template.")
         return
     
+
+    
+    # Caminhos de saída para a imagem da rosa dos ventos nas duas páginas
+    img_final_rosa_1 = os.path.join("output", "rosa_dos_ventos_pagina1.png")
+    img_final_rosa_2 = os.path.join("output", "rosa_dos_ventos_pagina2.png")
+
+    # Definindo as páginas
     ws_pagina1 = wb["Pagina1"]
     ws_pagina2 = wb["Pagina2"]
 
-    # Adiciona a imagem do mapa
-    if os.path.exists(image_path):
-        try:
-            redimensionar_imagem(image_path, 800, 575)
-            centralizar_imagem_na_planilha(ws_pagina1, image_path, "A02")
-            print("✅ Imagem 'mapa.png' adicionada na aba 'Pagina1'.")
-        except Exception as e:
-            print(f"❌ Erro ao inserir imagem 'mapa.png': {e}")
-    else:
-        print("❌ Imagem do mapa não foi encontrada no caminho:", image_path)
-    # Inserir as informações na planilha
-    set_cell_value(ws_pagina1, "I28", dados['desenhista'])
+    limpar_colunas_fora_do_layout(ws_pagina1, "K")
+    limpar_linhas_fora_do_layout(ws_pagina1, 33)
+
+    limpar_colunas_fora_do_layout(ws_pagina2, "J")
+    limpar_linhas_fora_do_layout(ws_pagina2, 33)
+    
+    preparar_planilha_para_pdf(
+    wb,
+    escalas_por_aba={
+        "Pagina1": 75,
+        "Pagina2": 85
+    },
+    print_areas={
+        "Pagina1": "A1:K33",
+        "Pagina2": "A1:J33"
+    }
+)
+
+    ws_pagina1.merge_cells("H33:I33")
+    ws_pagina2.merge_cells("F33:J33")
+
+    # Caminho da imagem do logo
+    img_cevasa_path = resource_path("resources/images/logo.png")
+
+    # Redimensionar o logo
+    redimensionar_imagem(img_cevasa_path, 95, 40)
+    img_cevasa = XLImage(img_cevasa_path)
+    img_cevasa.anchor = "A32"
+    ws_pagina2.add_image(img_cevasa)
+
+    # Largura fixa da coluna K para a Página 1
+    ws_pagina1.column_dimensions["K"].width = 36
+
+    # **Redimensionar as imagens para a página 1 e página 2**:
+    # Página 1
+    img_rosa_path_1 = resource_path("resources/images/rosa_dos_ventos.png")
+    redimensionar_imagem(img_rosa_path_1, 110, 110)  # Redimensionando para a Página 1
+
+    # Página 2
+    img_rosa_path_2 = resource_path("resources/images/rosa_dos_ventos.png")
+    redimensionar_imagem(img_rosa_path_2, 100, 90)  # Redimensionando para a Página 2
+
+    # Mesclar as células para a rosa dos ventos na Página 1 e Página 2
+    ws_pagina1.merge_cells("K28:K31")  # Página 1
+    ws_pagina2.merge_cells("I28:J31")  # Página 2
+
+    # Gerar e inserir a imagem da rosa na Página 1
+    gerar_imagem_centrada(img_rosa_path_1, 252, 110, img_final_rosa_1)
+    inserir_imagem(ws_pagina1, img_final_rosa_1, "K28")
+
+    # Gerar e inserir a imagem da rosa na Página 2
+    gerar_imagem_centrada(img_rosa_path_2, 170, 90, img_final_rosa_2)
+    inserir_imagem(ws_pagina2, img_final_rosa_2, "I28")
+
+    # Ajustes adicionais nas larguras e alturas das colunas e linhas
+    ws_pagina1.column_dimensions["K"].width = 36
+
+    # Inserir a logo da Cevasa
+    img_cevasa = XLImage(resource_path("resources/images/logo.png"))
+    img_cevasa.anchor = "A32"
+    ws_pagina1.add_image(img_cevasa)
+
+    # Inserir as informações na planilha (Página 1)
+    set_cell_value(ws_pagina1, "I28", dados['parc'])
     set_cell_value(ws_pagina1, "J29", dados['data_atual'])
     set_cell_value(ws_pagina1, "I30", dados['distancia'])
     set_cell_value(ws_pagina1, "I31", dados['area_cana'])
@@ -519,14 +657,57 @@ def gerar_layout_final(dxf_file_path, layer_data, talhoes_dict, legenda_layers):
     set_cell_value(ws_pagina1, "I29", dados['escala'])
     set_cell_value(ws_pagina1, "B33", dados['propriedade'])
     set_cell_value(ws_pagina1, "E33", dados['mun_est'])
-    set_cell_value(ws_pagina1, "H33", dados['parc'])
-    
+    set_cell_value(ws_pagina1, "H33", dados['desenhista'])
+
+    # Atribuição de dados para a Página 2
+    set_cell_value(ws_pagina2, "G28", dados['parc'])
+    set_cell_value(ws_pagina2, "H29", dados['data_atual'])
+    set_cell_value(ws_pagina2, "G30", dados['distancia'])
+    set_cell_value(ws_pagina2, "G31", dados['area_cana'])
+    set_cell_value(ws_pagina2, "H31", dados['nova_versao'])
+    set_cell_value(ws_pagina2, "G29", dados['escala'])
+    set_cell_value(ws_pagina2, "B33", dados['propriedade'])
+    set_cell_value(ws_pagina2, "C33", dados['mun_est'])
+    set_cell_value(ws_pagina2, "F33", dados['desenhista'])
+
     # Inserir as tabelas na aba Pagina2
     adicionar_tabela_comprimentos_custom(ws_pagina2, layer_data, start_row=2, start_col=2)
     adicionar_tabela_talhoes_custom(ws_pagina2, talhoes_dict, start_row=2, start_col=7)
     adicionar_legenda_layers(ws_pagina1, legenda_layers, start_row=1, start_col=9)
 
+    if os.path.exists(image_path):  # image_path deve estar corretamente definido
+        try:
+            # Redimensionar a imagem do mapa antes de inseri-la no Excel
+            redimensionar_imagem(image_path, 800, 575)  # Ajuste conforme necessário
+
+            # Função para centralizar a imagem no Excel
+            centralizar_imagem_na_planilha(ws_pagina1, image_path, "A02")  # 'A02' é a célula onde a imagem será inserida
+
+            print("✅ Imagem 'mapa.png' adicionada na aba 'Pagina1'.")
+        except Exception as e:
+            print(f"❌ Erro ao inserir imagem 'mapa.png': {e}")
+    else:
+        print("❌ Imagem do mapa não foi encontrada no caminho:", image_path)
+
     # Salvar a planilha com o nome gerado
     wb.save(output_file)
     print(f"✅ Planilha salva como '{output_file}'.")
-    messagebox.showinfo("Sucesso", f"Planilha salva como '{output_file}'.")
+
+    # Converter a planilha salva para PDF
+    pdf_path = converter_excel_para_pdf_com_libreoffice(output_file)
+
+    # Se a conversão foi bem-sucedida, exibe o PDF no visualizador integrado
+    if pdf_path:
+        from ui.excel_viewer import PDFViewer
+        app = QApplication.instance()
+        if app is None:
+            app = QApplication([])
+
+        if not hasattr(root, 'pdf_viewer_refs'):
+            root.pdf_viewer_refs = []
+
+        viewer = PDFViewer(pdf_path)
+        viewer.show()
+        root.pdf_viewer_refs.append(viewer)
+    else:
+        messagebox.showwarning("Erro", "Não foi possível gerar o PDF da planilha final.")

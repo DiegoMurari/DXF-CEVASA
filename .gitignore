@@ -1,9 +1,10 @@
-# Ignorar tudo na pasta build/
-build/
-
-# Ignorar arquivos gerados
-*.toc
-*.pyz
-*.zip
-*.exe
-*.spe
+# Arquivos e pastas que não devem ir pro GitHub
+__pycache__/
+*.pyc
+*.pyo
+output/
+*.xlsx
+*.pdf
+mapa.png
+last_desenhista.txt
+.DS_Store
