@@ -20,9 +20,6 @@ O sistema é uma solução especializada desenvolvida para simplificar e automat
 
 ---
 
-
-## 🎬 Demonstração do Projeto
-
 <h3 align="center">🎬 Demonstração do Projeto</h3>
 
 <p align="center">
