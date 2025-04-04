@@ -23,9 +23,13 @@ O sistema é uma solução especializada desenvolvida para simplificar e automat
 
 ## 🎬 Demonstração do Projeto
 
-[![Clique para assistir à demonstração](https://img.icons8.com/fluency/240/play-button-circled.png)](https://drive.google.com/file/d/1mPOrzUQHR-VRBUbNS1nsVMLc8eAMwLro/view?usp=sharing)
+<h3 align="center">🎬 Demonstração do Projeto</h3>
 
-
+<p align="center">
+  <a href="https://drive.google.com/file/d/1mPOrzUQHR-VRBUbNS1nsVMLc8eAMwLro/view?usp=sharing">
+    <img src="https://img.icons8.com/fluency/240/play-button-circled.png" alt="Clique para assistir à demonstração" />
+  </a>
+</p>
 
 ## 🖥️ Interface Inicial
 
@@ -48,18 +52,6 @@ Na lateral direita, você tem botões para redefinir visualização, medir dist�
 
 ---
 
-## ✅ Filtros por Layer
-
-<p align="center">
-  <img src="docs/selecionar_layers.png" alt="Seleção de Layers" width="400">
-</p>
-
-Antes de gerar a planilha, o sistema permite selecionar **quais layers devem ser incluídos nos cálculos**.
-
----
-
----
-
 ## ✅ Preencher excel
 
 <p align="center">
@@ -69,6 +61,16 @@ Antes de gerar a planilha, o sistema permite selecionar **quais layers devem ser
 Apos confirmar os filtros, o sistema apresenta essa janela **para inserir as informações na planilha**.
 
 O campo desenhista sempre vai salvar o ultimo nome inserido para agilizar o preenchimento.
+
+---
+
+## ✅ Filtros por Layer
+
+<p align="center">
+  <img src="docs/selecionar_layers.png" alt="Seleção de Layers" width="400">
+</p>
+
+Antes de gerar a planilha, o sistema permite selecionar **quais layers devem ser incluídos nos cálculos**.
 
 ---
 
