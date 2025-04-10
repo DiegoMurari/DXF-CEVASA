@@ -1,0 +1,18 @@
+22 vnd.com.sun.star.wiki%3AsendDialog 9a Den MediaWiki-Server auswählen, auf dem das Dokument veröffentlicht werden soll. Um einen neuen Server zur Liste hinzuzufügen, auf Hinzufügen klicken.
+34 com.sun.star.wiki.MediaWiki.SendToMediaWiki.WikiList 9a Den MediaWiki-Server auswählen, auf dem das Dokument veröffentlicht werden soll. Um einen neuen Server zur Liste hinzuzufügen, auf Hinzufügen klicken.
+36 com.sun.star.wiki.MediaWiki.SendToMediaWiki.MinorCheck 9d Dieses Markierfeld aktivieren, um die bereitgestellte Seite als geringfügige Änderung einer bereits existierenden Seite mit gleichem Titel zu kennzeichnen.
+37 com.sun.star.wiki.MediaWiki.SendToMediaWiki.ArticleText 133 Den Titel des Wiki-Eintrags eingeben. Dieser bildet die Hauptüberschrift des Eintrags. Für einen neuen Eintrag muss ein Titel angegeben werden, der in diesem Wiki noch nicht existiert. Wenn ein bereits existierender Titel eingegeben wird, wird der Artikel den bereits existierenden Eintrag überschrieben.
+38 com.sun.star.wiki.MediaWiki.SendToMediaWiki.BrowserCheck 76 Dieses Markierfeld aktivieren, um den Webbrowser des Systems zu öffnen und die bereitgestellte Wiki-Seite anzuzeigen.
+37 com.sun.star.wiki.MediaWiki.SendToMediaWiki.CommentText 43 Optional eine Zusammenfassung oder einen kurzen Kommentar eingeben.
+1f vnd.com.sun.star.wiki%3Aaccount 43 Die URL eines MediaWiki-Servers eingeben, beginnend mit "https://".
+35 com.sun.star.wiki.MediaWiki.EditSetting.PasswordField 5b Das Kennwort für den MediaWiki-Server eingeben. Bei anonymem Zugriff das Feld leer lassen.
+30 com.sun.star.wiki.MediaWiki.EditSetting.UrlField 43 Die URL eines MediaWiki-Servers eingeben, beginnend mit "https://".
+35 com.sun.star.wiki.MediaWiki.EditSetting.UsernameField 60 Den Benutzernamen für den MediaWiki-Server eingeben. Bei anonymem Zugriff das Feld leer lassen.
+2f com.sun.star.wiki.MediaWiki.EditSetting.SaveBox 97 Aktivieren, um das Kennwort dauerhaft zu speichern. Das Master-Kennwort muss unter Extras ▸ Optionen… ▸ %PRODUCTNAME ▸ Sicherheit gesetzt sein.
+20 vnd.com.sun.star.wiki%3Aaboutbox b6 Mithilfe des Wiki Publisher kann das aktuelle Writer-Textdokument auf einen MediaWiki-Server hochgeladen werden. Nach dem Hochladen kann jeder Wiki-Nutzer das Dokument im Wiki lesen.
+1c vnd.com.sun.star.wiki%3Asend 7a Wählen Sie Datei ▸ Senden ▸ An MediaWiki, um das aktuelle Writer-Dokument auf einem MediaWiki-Server bereitzustellen.
+20 vnd.com.sun.star.wiki%3Asettings 125 Klicken Sie auf »Hinzufügen«, um einen neuen Wiki-Server hinzuzufügen.Wählen Sie einen Eintrag aus und klicken Sie dann auf »Bearbeiten«, um die Kontoeinstellungen zu bearbeiten.Wählen Sie einen Eintrag aus und klicken Sie auf »Entfernen«, um einen Eintrag aus der Liste zu löschen.
+31 com.sun.star.wiki.MediaWiki.Settings.RemoveButton 31 Entfernt den ausgewählten Eintrag aus der Liste.
+2f com.sun.star.wiki.MediaWiki.Settings.EditButton 49 Öffnet den Dialog MediaWiki, um den ausgewählten Eintrag zu bearbeiten.
+2d com.sun.star.wiki.MediaWiki.Settings.WikiList 125 Klicken Sie auf »Hinzufügen«, um einen neuen Wiki-Server hinzuzufügen.Wählen Sie einen Eintrag aus und klicken Sie dann auf »Bearbeiten«, um die Kontoeinstellungen zu bearbeiten.Wählen Sie einen Eintrag aus und klicken Sie auf »Entfernen«, um einen Eintrag aus der Liste zu löschen.
+2e com.sun.star.wiki.MediaWiki.Settings.AddButton 4e Öffnet den Dialog MediaWiki, um einen neuen Eintrag in die Liste einzufügen.

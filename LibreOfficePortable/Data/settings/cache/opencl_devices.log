@@ -1,0 +1,36 @@
+Device Index: 0
+  Selected: true
+  Device Name: gfx90c
+  Device Vendor: Advanced Micro Devices, Inc.
+  Device Version: OpenCL 1.2 AMD-APP (3584.0)
+  Driver Version: 3584.0 (PAL,HSAIL)
+  Device Type: gpu 
+  Device Extensions: cl_khr_fp64 cl_amd_fp64 cl_khr_global_int32_base_atomics cl_khr_global_int32_extended_atomics cl_khr_local_int32_base_atomics cl_khr_local_int32_extended_atomics cl_khr_int64_base_atomics cl_khr_int64_extended_atomics cl_khr_3d_image_writes cl_khr_byte_addressable_store cl_khr_fp16 cl_khr_gl_sharing cl_amd_device_attribute_query cl_amd_vec3 cl_amd_printf cl_amd_media_ops cl_amd_media_ops2 cl_amd_popcnt cl_khr_d3d10_sharing cl_khr_d3d11_sharing cl_khr_dx9_media_sharing cl_khr_image2d_from_buffer cl_khr_gl_event cl_amd_copy_buffer_p2p 
+  Device OpenCL C Version: OpenCL C 1.2 
+  Device Available: true
+  Device Compiler Available: true
+  Device Linker Available: true
+  Platform Name: AMD Accelerated Parallel Processing
+  Platform Vendor: Advanced Micro Devices, Inc.
+  Platform Version: OpenCL 2.1 AMD-APP (3584.0)
+  Platform Profile: FULL_PROFILE
+  Platform Extensions: cl_khr_icd cl_khr_d3d10_sharing cl_khr_d3d11_sharing cl_khr_dx9_media_sharing cl_amd_event_callback cl_amd_offline_devices 
+
+Device Index: 1
+  Selected: false
+  Device Name: NVIDIA GeForce GTX 1650
+  Device Vendor: NVIDIA Corporation
+  Device Version: OpenCL 3.0 CUDA
+  Driver Version: 561.09
+  Device Type: gpu 
+  Device Extensions: cl_khr_global_int32_base_atomics cl_khr_global_int32_extended_atomics cl_khr_local_int32_base_atomics cl_khr_local_int32_extended_atomics cl_khr_fp64 cl_khr_3d_image_writes cl_khr_byte_addressable_store cl_khr_icd cl_khr_gl_sharing cl_nv_compiler_options cl_nv_device_attribute_query cl_nv_pragma_unroll cl_nv_d3d10_sharing cl_khr_d3d10_sharing cl_nv_d3d11_sharing cl_nv_copy_opts cl_nv_create_buffer cl_khr_int64_base_atomics cl_khr_int64_extended_atomics cl_khr_device_uuid cl_khr_pci_bus_info cl_khr_external_semaphore cl_khr_external_memory cl_khr_external_semaphore_win32 cl_khr_external_memory_win32
+  Device OpenCL C Version: OpenCL C 1.2 
+  Device Available: true
+  Device Compiler Available: true
+  Device Linker Available: true
+  Platform Name: NVIDIA CUDA
+  Platform Vendor: NVIDIA Corporation
+  Platform Version: OpenCL 3.0 CUDA 12.6.65
+  Platform Profile: FULL_PROFILE
+  Platform Extensions: cl_khr_global_int32_base_atomics cl_khr_global_int32_extended_atomics cl_khr_local_int32_base_atomics cl_khr_local_int32_extended_atomics cl_khr_fp64 cl_khr_3d_image_writes cl_khr_byte_addressable_store cl_khr_icd cl_khr_gl_sharing cl_nv_compiler_options cl_nv_device_attribute_query cl_nv_pragma_unroll cl_nv_d3d10_sharing cl_khr_d3d10_sharing cl_nv_d3d11_sharing cl_nv_copy_opts cl_nv_create_buffer cl_khr_int64_base_atomics cl_khr_int64_extended_atomics cl_khr_device_uuid cl_khr_pci_bus_info cl_khr_external_semaphore cl_khr_external_memory cl_khr_external_semaphore_win32 cl_khr_external_memory_win32
+

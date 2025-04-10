@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<oor:items xmlns:oor="http://openoffice.org/2001/registry" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<item oor:path="/org.openoffice.Office.Calc/Formula/Calculation"><prop oor:name="OpenCLMinimumDataSize" oor:op="fuse"><value>100</value></prop></item>
+<item oor:path="/org.openoffice.Office.Common/Help"><prop oor:name="ExtendedTip" oor:op="fuse"><value>false</value></prop></item>
+<item oor:path="/org.openoffice.Office.Common/Help"><prop oor:name="Locale" oor:op="fuse"><value></value></prop></item>
+<item oor:path="/org.openoffice.Office.Common/Help"><prop oor:name="System" oor:op="fuse"><value>WIN</value></prop></item>
+<item oor:path="/org.openoffice.Office.Common/Misc"><prop oor:name="FirstRun" oor:op="fuse"><value>false</value></prop></item>
+<item oor:path="/org.openoffice.Office.Common/Misc"><prop oor:name="SelectedOpenCLDeviceIdentifier" oor:op="fuse"><value>Advanced Micro Devices, Inc. 3584.0 (PAL,HSAIL)--25.2.1.2--1556978208</value></prop></item>
+<item oor:path="/org.openoffice.Office.Common/Path/Current"><prop oor:name="Work" oor:op="fuse"><value xsi:nil="true"/></prop></item>
+<item oor:path="/org.openoffice.Office.Linguistic/General"><prop oor:name="UILocale" oor:op="fuse"><value>pt-BR</value></prop></item>
+<item oor:path="/org.openoffice.Office.Logging/Settings"><node oor:name="unopkg" oor:op="replace"><prop oor:name="LogLevel" oor:op="fuse"><value>2147483647</value></prop><prop oor:name="DefaultHandler" oor:op="fuse"><value>com.sun.star.logging.FileHandler</value></prop><node oor:name="HandlerSettings"><prop oor:name="FileURL" oor:op="fuse"><value>$(userurl)/$(loggername).log</value></prop></node><prop oor:name="DefaultFormatter" oor:op="fuse"><value>com.sun.star.logging.PlainTextFormatter</value></prop><node oor:name="FormatterSettings"></node></node></item>
+<item oor:path="/org.openoffice.Office.Paths/Paths/org.openoffice.Office.Paths:NamedPath['Temp']"><prop oor:name="WritePath" oor:op="fuse"><value>file:///C:/Users/DIEGOM~1/AppData/Local/Temp/LibreOfficePortableTemp/temp</value></prop></item>
+<item oor:path="/org.openoffice.Office.Paths/Paths/org.openoffice.Office.Paths:NamedPath['Work']"><prop oor:name="WritePath" oor:op="fuse"><value>file:///C:</value></prop></item>
+<item oor:path="/org.openoffice.Office.Recovery/RecoveryInfo"><prop oor:name="SessionData" oor:op="fuse"><value>false</value></prop></item>
+<item oor:path="/org.openoffice.Office.Update/Update"><prop oor:name="LastUpdateTime" oor:op="fuse"><value>552829760</value></prop></item>
+<item oor:path="/org.openoffice.Office.Views/Windows"><node oor:name="SplitWindow0" oor:op="replace"><prop oor:name="Visible" oor:op="fuse"><value xsi:nil="true"/></prop><node oor:name="UserData"><prop oor:name="UserItem" oor:op="fuse" oor:type="xs:string"><value>V1,2,0</value></prop></node><prop oor:name="WindowState" oor:op="fuse"><value xsi:nil="true"/></prop></node></item>
+<item oor:path="/org.openoffice.Office.Views/Windows"><node oor:name="SplitWindow1" oor:op="replace"><prop oor:name="Visible" oor:op="fuse"><value xsi:nil="true"/></prop><node oor:name="UserData"><prop oor:name="UserItem" oor:op="fuse" oor:type="xs:string"><value>V1,2,0</value></prop></node><prop oor:name="WindowState" oor:op="fuse"><value xsi:nil="true"/></prop></node></item>
+<item oor:path="/org.openoffice.Office.Views/Windows"><node oor:name="SplitWindow2" oor:op="replace"><prop oor:name="Visible" oor:op="fuse"><value xsi:nil="true"/></prop><node oor:name="UserData"><prop oor:name="UserItem" oor:op="fuse" oor:type="xs:string"><value>V1,2,0</value></prop></node><prop oor:name="WindowState" oor:op="fuse"><value xsi:nil="true"/></prop></node></item>
+<item oor:path="/org.openoffice.Office.Views/Windows"><node oor:name="SplitWindow3" oor:op="replace"><prop oor:name="Visible" oor:op="fuse"><value xsi:nil="true"/></prop><node oor:name="UserData"><prop oor:name="UserItem" oor:op="fuse" oor:type="xs:string"><value>V1,2,0</value></prop></node><prop oor:name="WindowState" oor:op="fuse"><value xsi:nil="true"/></prop></node></item>
+<item oor:path="/org.openoffice.Office.Writer/Layout/Other"><prop oor:name="ApplyCharUnit" oor:op="fuse"><value>false</value></prop></item>
+<item oor:path="/org.openoffice.Setup/L10N"><prop oor:name="ooLocale" oor:op="fuse"><value>pt-BR</value></prop></item>
+<item oor:path="/org.openoffice.Setup/L10N"><prop oor:name="ooSetupSystemLocale" oor:op="fuse"><value>pt-BR</value></prop></item>
+<item oor:path="/org.openoffice.Setup/Office/Factories/org.openoffice.Setup:Factory['com.sun.star.frame.StartModule']"><prop oor:name="ooSetupFactoryWindowAttributes" oor:op="fuse"><value>83,105,1424,722;1;1;0,0,0,0;</value></prop></item>
+<item oor:path="/org.openoffice.Setup/Office/Factories/org.openoffice.Setup:Factory['com.sun.star.sheet.SpreadsheetDocument']"><prop oor:name="ooSetupFactoryWindowAttributes" oor:op="fuse"><value>0,29,1024,739;1;,,,;</value></prop></item>
+<item oor:path="/org.openoffice.Setup/Office"><prop oor:name="LastCompatibilityCheckID" oor:op="fuse"><value>d3abf4aee5fd705e4a92bba33a32f40bc4e56f49</value></prop></item>
+<item oor:path="/org.openoffice.Setup/Office"><prop oor:name="ooSetupInstCompleted" oor:op="fuse"><value>true</value></prop></item>
+<item oor:path="/org.openoffice.Setup/Product"><prop oor:name="ooSetupLastVersion" oor:op="fuse"><value>25.2</value></prop></item>
+</oor:items>

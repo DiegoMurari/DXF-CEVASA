@@ -1,0 +1,18 @@
+22 vnd.com.sun.star.wiki%3AsendDialog e4 Ընտրեք MediaWiki սերվերը, որտեղ ցանկանում եք հրապարակել ձեր փաստաթուղթը: Սեղմեք Ավելացնել ՝ ցանկին նոր սերվեր ավելացնելու համար:
+34 com.sun.star.wiki.MediaWiki.SendToMediaWiki.WikiList e4 Ընտրեք MediaWiki սերվերը, որտեղ ցանկանում եք հրապարակել ձեր փաստաթուղթը: Սեղմեք Ավելացնել ՝ ցանկին նոր սերվեր ավելացնելու համար:
+36 com.sun.star.wiki.MediaWiki.SendToMediaWiki.MinorCheck cd Ընտրեք այս վանդակը՝ վերբեռնված էջը նշելու որպես նույն վերնագրով արդեն գոյություն ունեցող էջի աննշան խմբագրում:
+37 com.sun.star.wiki.MediaWiki.SendToMediaWiki.ArticleText 18b Մուտքագրեք ձեր վիքի մուտքի անվանումը։ Սա ձեր վիքի մուտքի վերնագիրն է։ Նոր մուտքի համար վերնագիրը պետք է եզակի լինի այս վիքիում։ Եթե մուտքագրեք գոյություն ունեցող վերնագիր, ձեր վերբեռնումը կվերագրի առկա վիքի մուտքը:
+38 com.sun.star.wiki.MediaWiki.SendToMediaWiki.BrowserCheck ae Նշեք այս վանդակը՝ ձեր համակարգի վեբ դիտարկիչը բացելու և վերբեռնված վիքի էջը ցուցադրելու համար:
+37 com.sun.star.wiki.MediaWiki.SendToMediaWiki.CommentText 66 Մուտքագրեք կամընտիր կարճ ամփոփում կամ մեկնաբանություն:
+1f vnd.com.sun.star.wiki%3Aaccount 50 Մուտքագրեք MediaWiki սերվերի URL-ը` սկսելով "https://".
+35 com.sun.star.wiki.MediaWiki.EditSetting.PasswordField 90 Մուտքագրեք ձեր գաղտնաբառը MediaWiki սերվերում: Դատարկ թողեք՝ անանուն մուտքի համար:
+30 com.sun.star.wiki.MediaWiki.EditSetting.UrlField 50 Մուտքագրեք MediaWiki սերվերի URL-ը` սկսելով "https://".
+35 com.sun.star.wiki.MediaWiki.EditSetting.UsernameField 97 Մուտքագրեք օգտվողի ձեր անունը MediaWiki սերվերում: Դատարկ թողեք՝ անանուն մուտքի համար:
+2f com.sun.star.wiki.MediaWiki.EditSetting.SaveBox 10a Միացրեք՝ ձեր գաղտնաբառը նիստերի միջև պահելու համար: Հիմնական գաղտնաբառը պետք է միացված լինի; տես Գործիքներ - Ընտրանքներ - %PRODUCTNAME - Անվտանգություն.
+20 vnd.com.sun.star.wiki%3Aaboutbox 15b Օգտագործելով Wiki Publisher-ը, դուք կարող եք վերբեռնել ձեր ընթացիկ Writer տեքստային փաստաթուղթը MediaWiki սերվերում: Վերբեռնումից հետո բոլոր վիքի օգտագործողները կարող են կարդալ ձեր փաստաթուղթը վիքիում։
+1c vnd.com.sun.star.wiki%3Asend a1 Ընտրեք Նիշք - Ուղարկել - MediaWiki ընթացիկ Writer փաստաթուղթը MediaWiki սերվերում վերբեռնելու համար:
+20 vnd.com.sun.star.wiki%3Asettings 16b Կտտացրեք Ավելացնել՝ նոր վիքի սերվեր ավելացնելու համար:Ընտրեք գրառում և սեղմեք Խմբագրել՝ հաշվի կարգավորումները խմբագրելու համար:Ընտրեք գրառում և սեղմեք Հեռացնել՝ մուտքը ցուցակից հեռացնելու համար:
+31 com.sun.star.wiki.MediaWiki.Settings.RemoveButton 43 Հեռացնում է ընտրված գրառումը ցանկից:
+2f com.sun.star.wiki.MediaWiki.Settings.EditButton 79 Բացում է MediaWiki երկխոսությունը՝ ընտրված գրառումը խմբագրելու համար:
+2d com.sun.star.wiki.MediaWiki.Settings.WikiList 16b Կտտացրեք Ավելացնել՝ նոր վիքի սերվեր ավելացնելու համար:Ընտրեք գրառում և սեղմեք Խմբագրել՝ հաշվի կարգավորումները խմբագրելու համար:Ընտրեք գրառում և սեղմեք Հեռացնել՝ մուտքը ցուցակից հեռացնելու համար:
+2e com.sun.star.wiki.MediaWiki.Settings.AddButton 80 Բացում է MediaWiki երկխոսությունը՝ ցանկում նոր գրառում ավելացնելու համար:

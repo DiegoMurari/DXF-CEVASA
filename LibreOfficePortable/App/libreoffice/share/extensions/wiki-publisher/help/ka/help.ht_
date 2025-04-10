@@ -1,0 +1,18 @@
+22 vnd.com.sun.star.wiki%3AsendDialog 165 აირჩიეთ MediaWiki-ის სერვერი, სადაც გნებავთ, თქვენი დოკუმენტი გამოაქვეყნოთ. დააწკაპუნეთ ღილაკზე დამატება, რომ სიაში ახალი სერვერი დაამატოთ.
+34 com.sun.star.wiki.MediaWiki.SendToMediaWiki.WikiList 165 აირჩიეთ MediaWiki-ის სერვერი, სადაც გნებავთ, თქვენი დოკუმენტი გამოაქვეყნოთ. დააწკაპუნეთ ღილაკზე დამატება, რომ სიაში ახალი სერვერი დაამატოთ.
+36 com.sun.star.wiki.MediaWiki.SendToMediaWiki.MinorCheck 12f დასვით ეს თოლია, თუ გნებავთ, ეს გვერდი იგივე სათაურის მქონე უკვე არსებული გვერდის უმნიშვნელო ჩასწორებად მონიშნოთ.
+37 com.sun.star.wiki.MediaWiki.SendToMediaWiki.ArticleText 253 შეიყვანეთ თქვენი ვიკი ჩანაწერის სათაური. ეს არის თქვენი ვიკი ჩანაწერის ზედა სათაური. ახალი ჩანაწერისთვის სათაური უნიკალური უნდა იყოს ამ ვიკიში. თუ შეიყვანთ არსებულ სათაურს, თქვენი ატვირთვა გადააწერს არსებულ ვიკი ჩანაწერს.
+38 com.sun.star.wiki.MediaWiki.SendToMediaWiki.BrowserCheck f1 დასვით ეს თოლია, რომ გახსნათ თქვენი სისტემური ბრაუზერი ატვირთული ვიკის გვერდის სანახავად.
+37 com.sun.star.wiki.MediaWiki.SendToMediaWiki.CommentText 8a შეიყვანეთ დამატებითი მოკლე მიმოხილვა ან კომენტარი.
+1f vnd.com.sun.star.wiki%3Aaccount 6b შეიყვანეთ MediaWiki სერვერის URL, დაწყებული "https://".
+35 com.sun.star.wiki.MediaWiki.EditSetting.PasswordField c4 შეიყვანეთ პაროლი MediaWiki-ის სერვერზე. დატოვეთ ცარიელი ანონიმური წვდომისთვის.
+30 com.sun.star.wiki.MediaWiki.EditSetting.UrlField 6b შეიყვანეთ MediaWiki სერვერის URL, დაწყებული "https://".
+35 com.sun.star.wiki.MediaWiki.EditSetting.UsernameField d7 შეიყვანეთ თქვენი სახელი MediaWiki-ის სერვერზე. დატოვეთ ცარიელი ანონიმური წვდომისთვის.
+2f com.sun.star.wiki.MediaWiki.EditSetting.SaveBox 148 ჩართეთ პაროლების სესიებს შორის დასამახსოვრებლად. საჭიროა, ჩართული იყოს მთავარი პაროლი. იხ. ხელსაწყოები - %PRODUCTNAME - უსაფრთხოება.
+20 vnd.com.sun.star.wiki%3Aaboutbox 1f8 ვიკიზე გამომცემლით შეგიძლიათ, თქვენი მიმდინარე Writer-ის ტექსტური დოკუმენტი MediaWiki-ის სერვერზე ატვირთოთ. ატვირთვის შემდეგ, ყველა ვიკის მომხმარებლებს შეუძლიათ, თქვენი დოკუმენტი ვიკიზე წაიკითხოს.
+1c vnd.com.sun.star.wiki%3Asend e7 აირჩიეთფაილი - გაგზავნა - MediaWiki-ზე, რომ მიმდინარე Writer-ის დოკუმენტი MediaWiki-ის სერვერზე ატვირთოთ.
+20 vnd.com.sun.star.wiki%3Asettings 23d დააწკაპუნეთ დამატება ახალი ვიკი სერვერის დასამატებლად.აირჩიეთ ჩანაწერი და დააწკაპუნეთ „რედაქტირებაზე“ ანგარიშის პარამეტრების შესაცვლელად.აირჩიეთ ჩანაწერი და დააწკაპუნეთ „წაშლა“ ჩანაწერის სიიდან ამოსაღებად. .
+31 com.sun.star.wiki.MediaWiki.Settings.RemoveButton 58 წაშლის მონიშნულ ჩანაწერს სიიდან.
+2f com.sun.star.wiki.MediaWiki.Settings.EditButton 99 გახსნის MedaWiki-ს დიალოგს მონიშნული ჩანაწერის ჩასასწორებლად.
+2d com.sun.star.wiki.MediaWiki.Settings.WikiList 23d დააწკაპუნეთ დამატება ახალი ვიკი სერვერის დასამატებლად.აირჩიეთ ჩანაწერი და დააწკაპუნეთ „რედაქტირებაზე“ ანგარიშის პარამეტრების შესაცვლელად.აირჩიეთ ჩანაწერი და დააწკაპუნეთ „წაშლა“ ჩანაწერის სიიდან ამოსაღებად. .
+2e com.sun.star.wiki.MediaWiki.Settings.AddButton 9e გახსნის MediaWiki-ის დიალოგს სიაში ახალი ჩანაწერის დასამატებლად.

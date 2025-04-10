@@ -1,0 +1,1 @@
+Ang extension na ito ay sumasama sa Calc at nag-aalok ng mga bagong Solver engine na gagamitin para sa pag-optimize ng mga nonlinear na modelo ng programming.

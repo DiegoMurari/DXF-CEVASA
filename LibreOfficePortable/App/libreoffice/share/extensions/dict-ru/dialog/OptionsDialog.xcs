@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<oor:component-schema xmlns:oor="http://openoffice.org/2001/registry" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" oor:name="Lightproof_ru_RU" oor:package="org.openoffice" xml:lang="en-US">
+  <info>
+
+Contains the options data used for the test extensions.
+</info>
+  <templates>
+    <group oor:name="ru_RU">
+      <info>
+                                The data for one leaf.
+                        </info>
+      <prop oor:name="hyphen" oor:type="xs:string">
+        <info>The hyphen definition of one leaf.</info>
+        <value/>
+      </prop>
+      <prop oor:name="comma" oor:type="xs:string">
+        <info>The comma definition of one leaf.</info>
+        <value/>
+      </prop>
+      <prop oor:name="multiword" oor:type="xs:string">
+        <info>The multiword definition of one leaf.</info>
+        <value/>
+      </prop>
+      <prop oor:name="together" oor:type="xs:string">
+        <info>The together definition of one leaf.</info>
+        <value/>
+      </prop>
+      <prop oor:name="common" oor:type="xs:string">
+        <info>The common definition of one leaf.</info>
+        <value/>
+      </prop>
+      <prop oor:name="space" oor:type="xs:string">
+        <info>The space definition of one leaf.</info>
+        <value/>
+      </prop>
+      <prop oor:name="abbreviation" oor:type="xs:string">
+        <info>The abbreviation definition of one leaf.</info>
+        <value/>
+      </prop>
+      <prop oor:name="dup" oor:type="xs:string">
+        <info>The dup definition of one leaf.</info>
+        <value/>
+      </prop>
+      <prop oor:name="numsep" oor:type="xs:string">
+        <info>The numsep definition of one leaf.</info>
+        <value/>
+      </prop>
+      <prop oor:name="typographica" oor:type="xs:string">
+        <info>The typographica definition of one leaf.</info>
+        <value/>
+      </prop>
+      <prop oor:name="quotation" oor:type="xs:string">
+        <info>The quotation definition of one leaf.</info>
+        <value/>
+      </prop>
+    </group>
+  </templates>
+  <component>
+    <group oor:name="Leaves">
+      <info>
+                        The list of leaves.
+                    </info>
+      <node-ref oor:name="ru_RU" oor:node-type="ru_RU">
+        <info>
+                                The definition of one leaf.
+                            </info>
+      </node-ref>
+    </group>
+  </component>
+</oor:component-schema>

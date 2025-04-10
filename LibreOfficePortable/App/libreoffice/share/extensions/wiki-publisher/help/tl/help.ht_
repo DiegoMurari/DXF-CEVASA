@@ -1,0 +1,18 @@
+22 vnd.com.sun.star.wiki%3AsendDialog 8d Piliin ang MediaWiki server kung saan mo gustong i-publish ang iyong dokumento. I-click Idagdag upang magdagdag ng bagong server sa listahan.
+34 com.sun.star.wiki.MediaWiki.SendToMediaWiki.WikiList 8d Piliin ang MediaWiki server kung saan mo gustong i-publish ang iyong dokumento. I-click Idagdag upang magdagdag ng bagong server sa listahan.
+36 com.sun.star.wiki.MediaWiki.SendToMediaWiki.MinorCheck 95 Lagyan ng check ang kahong ito upang markahan ang na-upload na pahina bilang isang maliit na pag-edit ng umiiral nang pahina na may parehong pamagat.
+37 com.sun.star.wiki.MediaWiki.SendToMediaWiki.ArticleText 11c Ilagay ang pamagat ng iyong entry sa wiki. Ito ang nangungunang heading ng iyong entry sa wiki. Para sa isang bagong entry, ang pamagat ay dapat na natatangi sa wiki na ito. Kung maglalagay ka ng isang umiiral na pamagat, ang iyong pag-upload ay o-overwrite ang umiiral na wiki entry.
+38 com.sun.star.wiki.MediaWiki.SendToMediaWiki.BrowserCheck 74 Lagyan ng check ang kahong ito upang buksan ang iyong system web browser at ipakita ang na-upload na pahina ng wiki.
+37 com.sun.star.wiki.MediaWiki.SendToMediaWiki.CommentText 30 Maglagay ng opsyonal na maikling buod o komento.
+1f vnd.com.sun.star.wiki%3Aaccount 3f Ilagay ang URL ng isang MediaWiki server, simula sa "https://".
+35 com.sun.star.wiki.MediaWiki.EditSetting.PasswordField 66 Ilagay ang iyong password sa MediaWiki server. Iwanang walang laman para sa hindi kilalang pag-access.
+30 com.sun.star.wiki.MediaWiki.EditSetting.UrlField 3f Ilagay ang URL ng isang MediaWiki server, simula sa "https://".
+35 com.sun.star.wiki.MediaWiki.EditSetting.UsernameField 67 Ilagay ang iyong user name sa MediaWiki server. Iwanang walang laman para sa hindi kilalang pag-access.
+2f com.sun.star.wiki.MediaWiki.EditSetting.SaveBox a9 Paganahin ang pag-imbak ng iyong password sa pagitan ng mga session. Dapat na pinagana ang master password; tingnan mo Mga Tool - Mga Opsyon - %PRODUCTNAME - Seguridad .
+20 vnd.com.sun.star.wiki%3Aaboutbox f0 Sa pamamagitan ng paggamit ng Wiki Publisher maaari mong i-upload ang iyong kasalukuyang dokumento ng teksto ng Writer sa isang MediaWiki server. Pagkatapos mag-upload, mababasa ng lahat ng mga gumagamit ng wiki ang iyong dokumento sa wiki.
+1c vnd.com.sun.star.wiki%3Asend 73 Pumili File - Ipadala - Sa MediaWiki upang i-upload ang kasalukuyang dokumento ng Writer sa isang MediaWiki server.
+20 vnd.com.sun.star.wiki%3Asettings d3 I-click ang Add para magdagdag ng bagong wiki server. Pumili ng entry at i-click ang I-edit upang i-edit ang mga setting ng account. Pumili ng entry at i-click ang Alisin upang alisin ang entry mula sa listahan.
+31 com.sun.star.wiki.MediaWiki.Settings.RemoveButton 2c Inaalis ang napiling entry mula sa listahan.
+2f com.sun.star.wiki.MediaWiki.Settings.EditButton 43 Binubuksan ang dialog ng MediaWiki upang i-edit ang napiling entry.
+2d com.sun.star.wiki.MediaWiki.Settings.WikiList d3 I-click ang Add para magdagdag ng bagong wiki server. Pumili ng entry at i-click ang I-edit upang i-edit ang mga setting ng account. Pumili ng entry at i-click ang Alisin upang alisin ang entry mula sa listahan.
+2e com.sun.star.wiki.MediaWiki.Settings.AddButton 4f Binubuksan ang dialog ng MediaWiki upang magdagdag ng bagong entry sa listahan.

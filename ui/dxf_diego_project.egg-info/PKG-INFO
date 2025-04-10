@@ -1,0 +1,39 @@
+Metadata-Version: 2.4
+Name: dxf_diego_project
+Version: 0.1.0
+Summary: Projeto de visualização, processamento e conversão de arquivos DXF
+Home-page: https://github.com/seu_usuario/dxf_diego_project
+Author: Diego
+Author-email: diego_murari@hotmail.com
+Classifier: Development Status :: 3 - Alpha
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+License-File: license.txt
+Requires-Dist: setuptools
+Requires-Dist: wheel
+Requires-Dist: pyparsing>=2.0.1
+Requires-Dist: typing_extensions>=4.6.0
+Requires-Dist: numpy
+Requires-Dist: fonttools
+Requires-Dist: pytest
+Requires-Dist: mypy>=1.11
+Requires-Dist: cython
+Requires-Dist: matplotlib
+Requires-Dist: pyside6
+Requires-Dist: Pillow
+Requires-Dist: PyMuPDF
+Requires-Dist: sphinx
+Requires-Dist: sphinx-rtd-theme
+Requires-Dist: sphinxcontrib-jquery
+Requires-Dist: openpyxl
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary

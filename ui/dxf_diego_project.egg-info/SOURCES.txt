@@ -1,0 +1,7 @@
+license.txt
+setup.py
+src/dxf_diego_project.egg-info/PKG-INFO
+src/dxf_diego_project.egg-info/SOURCES.txt
+src/dxf_diego_project.egg-info/dependency_links.txt
+src/dxf_diego_project.egg-info/requires.txt
+src/dxf_diego_project.egg-info/top_level.txt
