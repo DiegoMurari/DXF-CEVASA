@@ -17,7 +17,3 @@ def criar_atalho(nome_exe='DXF-CEVASA.exe', nome_atalho='DXF CEVASA', icone='ico
     atalho.IconLocation = os.path.join(os.getcwd(), icone)
     atalho.save()
     print(f"✅ Atalho criado: {caminho_atalho}")
-
-# Executa se for chamado diretamente
-if __name__ == '__main__':
-    criar_atalho()

@@ -3,21 +3,14 @@
  <version>LibreOffice v1</version>
  <device>
   <type>opencl</type>
-  <name>gfx90c</name>
-  <driver>3584.0 (PAL,HSAIL)</driver>
-  <time>32503</time>
-  <errors>false</errors>
- </device>
- <device>
-  <type>opencl</type>
-  <name>NVIDIA GeForce GTX 1650</name>
-  <driver>561.09</driver>
-  <time>55025</time>
+  <name>Intel(R) UHD Graphics 770</name>
+  <driver>31.0.101.4953</driver>
+  <time>max</time>
   <errors>false</errors>
  </device>
  <device>
   <type>native</type>
-  <time>2858496</time>
+  <time>1379328</time>
   <errors>false</errors>
  </device>
 </profile>

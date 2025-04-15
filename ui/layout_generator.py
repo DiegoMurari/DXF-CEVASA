@@ -28,6 +28,16 @@ from PySide6.QtWidgets import QApplication, QMessageBox
 
 MAX_DESENHISTA = 60  # Limite máximo para o nome do DESENHISTA
 
+
+def resource_path(relative_path):
+        try:
+            base_path = sys._MEIPASS
+        except Exception:
+            # Garante que o caminho sempre parte da raiz do projeto
+            base_path = os.path.dirname(os.path.abspath(__file__))
+            base_path = os.path.abspath(os.path.join(base_path, ".."))  # Sobe para a raiz
+        return os.path.join(base_path, relative_path)
+
 def set_cell_value(ws, cell_coord, value):
     for merged_range in ws.merged_cells.ranges:
         if cell_coord in merged_range:
@@ -41,10 +51,7 @@ def converter_excel_para_pdf_com_libreoffice(excel_path):
     Converte um arquivo .xlsx para .pdf usando LibreOffice Portable.
     """
     try:
-        # Caminho do LibreOffice dentro do seu projeto
-        libreoffice_path = os.path.abspath(
-            r"LibreOfficePortable\App\libreoffice\program\soffice.exe"
-        )
+        libreoffice_path = resource_path("LibreOfficePortable/App/libreoffice/program/soffice.exe")
         print(f"📌 Caminho do LibreOffice: {libreoffice_path}")
         print(f"📌 Excel de entrada: {excel_path}")
 
@@ -56,7 +63,6 @@ def converter_excel_para_pdf_com_libreoffice(excel_path):
 
         print(f"📌 Diretório de saída: {output_dir}")
         
-        # Montar o comando
         command = [
             libreoffice_path,
             "--headless",
@@ -67,7 +73,6 @@ def converter_excel_para_pdf_com_libreoffice(excel_path):
         print("📤 Comando que será executado:")
         print(" ".join(command))
 
-        # Executar o comando
         subprocess.run(command, check=True)
 
         pdf_path = excel_path.replace(".xlsx", ".pdf")
@@ -81,13 +86,6 @@ def converter_excel_para_pdf_com_libreoffice(excel_path):
             print("❌ PDF não foi gerado.")
             return None
 
-    except Exception as e:
-        print(f"❌ Erro ao converter Excel para PDF: {e}")
-        return None
-
-    except Exception as e:
-        print(f"❌ Erro ao converter Excel para PDF: {e}")
-        return None
     except Exception as e:
         print(f"❌ Erro ao converter Excel para PDF: {e}")
         return None
@@ -403,13 +401,6 @@ def gerar_layout_final(dxf_file_path, layer_data, talhoes_dict, legenda_layers, 
         except Exception as e:
             print(f"❌ Erro ao inserir imagem na planilha: {e}")
 
-    def resource_path(relative_path):
-        try:
-            base_path = sys._MEIPASS
-        except Exception:
-            base_path = os.path.abspath(".")
-        return os.path.join(base_path, relative_path)
-
     template_file = resource_path('resources/excel/Planilha_template.xlsx')
 
     # Usa o diretório definido pelo usuário (via interface), ou fallback para 'output'
@@ -446,24 +437,24 @@ def gerar_layout_final(dxf_file_path, layer_data, talhoes_dict, legenda_layers, 
         return
 
     limpar_colunas_fora_do_layout(ws_pagina1, "K")
-    limpar_linhas_fora_do_layout(ws_pagina1, 33)
+    limpar_linhas_fora_do_layout(ws_pagina1, 40)
     limpar_colunas_fora_do_layout(ws_pagina2, "J")
-    limpar_linhas_fora_do_layout(ws_pagina2, 33)
+    limpar_linhas_fora_do_layout(ws_pagina2, 40)
 
     preparar_planilha_para_pdf(
         wb,
         escalas_por_aba={"Pagina1": 75, "Pagina2": 85},
-        print_areas={"Pagina1": "A1:K33", "Pagina2": "A1:J33"}
+        print_areas={"Pagina1": "A1:K40", "Pagina2": "A1:J40"}
     )
 
-    ws_pagina1.merge_cells("H33:I33")
-    ws_pagina2.merge_cells("F33:J33")
+    ws_pagina1.merge_cells("H36:I36")
+    ws_pagina2.merge_cells("F35:J35")
 
     # Logo da Cevasa
     img_cevasa_path = resource_path("resources/images/logo.png")
     redimensionar_imagem(img_cevasa_path, 95, 40)
     img_cevasa = XLImage(img_cevasa_path)
-    img_cevasa.anchor = "A32"
+    img_cevasa.anchor = "A34"
     ws_pagina2.add_image(img_cevasa)
     ws_pagina1.column_dimensions["K"].width = 36
 
@@ -473,51 +464,51 @@ def gerar_layout_final(dxf_file_path, layer_data, talhoes_dict, legenda_layers, 
     img_rosa_path_2 = resource_path("resources/images/rosa_dos_ventos.png")
     redimensionar_imagem(img_rosa_path_2, 100, 90)
 
-    ws_pagina1.merge_cells("K28:K31")
-    ws_pagina2.merge_cells("I28:J31")
+    ws_pagina1.merge_cells("K31:K34")
+    ws_pagina2.merge_cells("I30:J33")
 
     img_final_rosa_1 = os.path.join("output", "rosa_dos_ventos_pagina1.png")
     img_final_rosa_2 = os.path.join("output", "rosa_dos_ventos_pagina2.png")
     gerar_imagem_centrada(img_rosa_path_1, 252, 110, img_final_rosa_1)
-    inserir_imagem(ws_pagina1, img_final_rosa_1, "K28")
+    inserir_imagem(ws_pagina1, img_final_rosa_1, "K31")
     gerar_imagem_centrada(img_rosa_path_2, 170, 90, img_final_rosa_2)
-    inserir_imagem(ws_pagina2, img_final_rosa_2, "I28")
+    inserir_imagem(ws_pagina2, img_final_rosa_2, "I30")
     ws_pagina1.column_dimensions["K"].width = 36
 
     img_cevasa = XLImage(resource_path("resources/images/logo.png"))
-    img_cevasa.anchor = "A32"
+    img_cevasa.anchor = "A35"
     ws_pagina1.add_image(img_cevasa)
 
     # Preencher informações na planilha
-    set_cell_value(ws_pagina1, "I28", dados['parc'])
-    set_cell_value(ws_pagina1, "J29", dados['data_atual'])
-    set_cell_value(ws_pagina1, "I30", dados['distancia'])
-    set_cell_value(ws_pagina1, "I31", dados['area_cana'])
-    set_cell_value(ws_pagina1, "J31", dados['nova_versao'])
-    set_cell_value(ws_pagina1, "I29", dados['escala'])
-    set_cell_value(ws_pagina1, "B33", dados['propriedade'])
-    set_cell_value(ws_pagina1, "E33", dados['mun_est'])
-    set_cell_value(ws_pagina1, "H33", dados['desenhista'])
+    set_cell_value(ws_pagina1, "I31", dados['parc'])         
+    set_cell_value(ws_pagina1, "J32", dados['data_atual'])   
+    set_cell_value(ws_pagina1, "I33", dados['distancia'])      
+    set_cell_value(ws_pagina1, "I34", dados['area_cana'])      
+    set_cell_value(ws_pagina1, "J34", dados['nova_versao'])    
+    set_cell_value(ws_pagina1, "I32", dados['escala'])         
+    set_cell_value(ws_pagina1, "B36", dados['propriedade'])    
+    set_cell_value(ws_pagina1, "E36", dados['mun_est'])       
+    set_cell_value(ws_pagina1, "H36", dados['desenhista'])    
 
-    set_cell_value(ws_pagina2, "G28", dados['parc'])
-    set_cell_value(ws_pagina2, "H29", dados['data_atual'])
-    set_cell_value(ws_pagina2, "G30", dados['distancia'])
-    set_cell_value(ws_pagina2, "G31", dados['area_cana'])
-    set_cell_value(ws_pagina2, "H31", dados['nova_versao'])
-    set_cell_value(ws_pagina2, "G29", dados['escala'])
-    set_cell_value(ws_pagina2, "B33", dados['propriedade'])
-    set_cell_value(ws_pagina2, "C33", dados['mun_est'])
-    set_cell_value(ws_pagina2, "F33", dados['desenhista'])
+    set_cell_value(ws_pagina2, "G30", dados['parc'])        
+    set_cell_value(ws_pagina2, "H31", dados['data_atual'])     
+    set_cell_value(ws_pagina2, "G32", dados['distancia'])      
+    set_cell_value(ws_pagina2, "G33", dados['area_cana'])     
+    set_cell_value(ws_pagina2, "H33", dados['nova_versao']) 
+    set_cell_value(ws_pagina2, "G31", dados['escala'])        
+    set_cell_value(ws_pagina2, "B35", dados['propriedade'])    
+    set_cell_value(ws_pagina2, "C35", dados['mun_est'])        
+    set_cell_value(ws_pagina2, "F35", dados['desenhista'])     
 
-    adicionar_tabela_comprimentos_custom(ws_pagina2, layer_data, start_row=2, start_col=2)
-    adicionar_tabela_talhoes_custom(ws_pagina2, talhoes_dict, start_row=2, start_col=7)
-    adicionar_legenda_layers(ws_pagina1, legenda_layers, start_row=1, start_col=9)
+    adicionar_tabela_comprimentos_custom(ws_pagina2, layer_data, start_row=4, start_col=2)
+    adicionar_tabela_talhoes_custom(ws_pagina2, talhoes_dict, start_row=4, start_col=7)
+    adicionar_legenda_layers(ws_pagina1, legenda_layers, start_row=4, start_col=9)
 
     image_path = os.path.join("output", "mapa.png")
     if os.path.exists(image_path):
         try:
             redimensionar_imagem(image_path, 800, 575)
-            centralizar_imagem_na_planilha(ws_pagina1, image_path, cell_coord="A02")
+            centralizar_imagem_na_planilha(ws_pagina1, image_path, cell_coord="A05")
             print("✅ Imagem 'mapa.png' adicionada na aba 'Pagina1'.")
         except Exception as e:
             print(f"❌ Erro ao inserir imagem 'mapa.png': {e}")

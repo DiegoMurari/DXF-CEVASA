@@ -10,6 +10,8 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QCursor, QDragEnterEvent, QDropEvent
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg as FigureCanvas
+from ui.config_manager import salvar_pasta_saida, carregar_pasta_saida
+from PySide6.QtWidgets import QFileDialog
 
 from dxf.dxf_loader import load_dxf
 from dxf.dxf_parser import parse_dxf
@@ -41,9 +43,9 @@ class DXFInterface(QWidget):
         self._pan_start = None
 
         # Diretório de saída para PDF/Excel (o PNG fica fixo em "output")
-        self.output_dir = os.path.abspath("saida_pdf_excel")
-        if not os.path.exists(self.output_dir):
-            os.makedirs(self.output_dir)
+        ultima_pasta = carregar_pasta_saida()
+        self.output_dir = ultima_pasta if ultima_pasta and os.path.exists(ultima_pasta) else os.path.abspath("saida_pdf_excel")
+        os.makedirs(self.output_dir, exist_ok=True)
 
         # Cria o canvas do Matplotlib
         self.fig, self.ax = plt.subplots()
@@ -216,9 +218,15 @@ class DXFInterface(QWidget):
 
     # 1) Definir local de saída
     def definir_local_saida(self):
-        directory = QFileDialog.getExistingDirectory(self, "Selecione o Local de Saída", self.output_dir)
+        # Carrega o último caminho salvo, se houver
+        pasta_salva = carregar_pasta_saida()
+
+        # Abre o seletor de pasta com o caminho salvo como padrão
+        directory = QFileDialog.getExistingDirectory(self, "Selecione o Local de Saída", pasta_salva or self.output_dir)
+        
         if directory:
             self.output_dir = directory
+            salvar_pasta_saida(directory)  # Salva para uso futuro
             QMessageBox.information(self, "Local de Saída", f"Local de saída definido para:\n{self.output_dir}")
 
     # 2) Abrir local de saída
@@ -299,7 +307,7 @@ class DXFInterface(QWidget):
             return
 
         mapa_path = os.path.join("output", "mapa.png")
-        salvar_mapa_como_png(self.canvas.figure, self.ax, output_path=mapa_path, dpi=75, padding_factor=0.1)
+        salvar_mapa_como_png(self.canvas.figure, self.ax, output_path=mapa_path, dpi=300, padding_factor=0.1)
 
         layer_data, _ = calcular_tabelas(filtered_entities)
         legenda_layers = extrair_legenda_layers(filtered_entities)
@@ -447,14 +455,77 @@ class DXFInterface(QWidget):
     def dragEnterEvent(self, event: QDragEnterEvent):
         if event.mimeData().hasUrls():
             event.acceptProposedAction()
+            self.drag_hover_active = True
+            self.aplicar_estilo_hover_drag()
+
+    def dragLeaveEvent(self, event):
+        self.drag_hover_active = False
+        self.aplicar_estilo_hover_drag()
 
     def dropEvent(self, event: QDropEvent):
+        self.drag_hover_active = False
+        self.aplicar_estilo_hover_drag()
         urls = event.mimeData().urls()
         if urls:
             file_path = urls[0].toLocalFile()
             if file_path.lower().endswith(".dxf"):
                 self.carregar_dxf(file_path)
 
+    def aplicar_estilo_hover_drag(self):
+        self.ax.clear()
+
+        if self.drag_hover_active:
+            # Fundo escuro (ou pode manter #2d2d30)
+            self.ax.set_facecolor("#2d2d30")
+
+            import matplotlib.patches as patches
+            # Retângulo pontilhado grande no centro
+            rect = patches.Rectangle(
+                (0.08, 0.25),  # canto inferior-esquerdo (em coordenadas Axes [0..1])
+                0.84, 0.5,     # largura, altura
+                transform=self.ax.transAxes,
+                fill=False,
+                edgecolor="#888",
+                linewidth=2,
+                linestyle="--"
+            )
+            self.ax.add_patch(rect)
+
+            # Texto principal (frase chamativa)
+            self.ax.text(
+                0.5, 0.55,
+                "SOLTE SEU ARQUIVO DXF AQUI",
+                ha="center", va="center",
+                fontsize=18, color="#DDD",
+                transform=self.ax.transAxes,
+                fontweight="bold"
+            )
+
+            # Texto secundário (complemento)
+            self.ax.text(
+                0.5, 0.48,
+                "Ou clique em 'Selecionar DXF'",
+                ha="center", va="center",
+                fontsize=12, color="#AAA",
+                transform=self.ax.transAxes
+            )
+
+        else:
+            if not self.dxf_path:
+                self.ax.set_facecolor("#2d2d30")
+                self.ax.text(
+                    0.5, 0.5,
+                    "ARRASTE O ARQUIVO DXF AQUI\nOU CLIQUE EM 'SELECIONAR DXF'",
+                    fontsize=16, color='grey', ha='center', va='center',
+                    transform=self.ax.transAxes, alpha=0.7
+                )
+            else:
+                # Se já há DXF carregado, redesenha o conteúdo normal
+                self.redesenhar()
+                return
+
+        self.ax.axis("off")
+        self.canvas.draw_idle()
     # Zoom via Scroll do mouse
     def ajustar_zoom(self, fator=1.1):
         xlim = self.ax.get_xlim()

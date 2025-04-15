@@ -1,10 +1,19 @@
-# Arquivos e pastas que não devem ir pro GitHub
+# Compilados Python
 __pycache__/
 *.pyc
 *.pyo
+
+# Arquivos de build do PyInstaller
+/build/
+/dist/
+*.spec
+
+# Arquivos gerados pelo seu aplicativo
 output/
 *.xlsx
 *.pdf
 mapa.png
 last_desenhista.txt
+
+# Arquivos do macOS
 .DS_Store
