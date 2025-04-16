@@ -1,7 +1,6 @@
 import os
 import math
 import sys
-import matplotlib.pyplot as plt
 from PySide6.QtWidgets import (
     QWidget, QHBoxLayout, QVBoxLayout, QPushButton, QLabel, QFileDialog,
     QListWidget, QListWidgetItem, QMessageBox, QApplication, QDialog,
@@ -25,15 +24,12 @@ class DXFInterface(QWidget):
         super().__init__()
         self.setWindowTitle("DXF Layout Generator - QGIS Style")
         self.setMinimumSize(1200, 700)
-        self.setAcceptDrops(True)  # Para permitir Drag & Drop
+        self.setAcceptDrops(True)
         self.setStyleSheet(self.dark_theme())
 
-        # Variáveis para DXF
         self.dxf_path = None
         self.dxf_entities = []
         self.visible_layers = []
-
-        # Variáveis para medições
         self.measurement_mode = False
         self.measurement_points = []
         self.medicoes_salvas = []
@@ -41,22 +37,19 @@ class DXFInterface(QWidget):
         self._is_panning = False
         self._pan_start = None
 
-        # Diretório de saída para PDF/Excel (o PNG fica fixo em "output")
         ultima_pasta = carregar_pasta_saida()
         self.output_dir = ultima_pasta if ultima_pasta and os.path.exists(ultima_pasta) else os.path.abspath("saida_pdf_excel")
         os.makedirs(self.output_dir, exist_ok=True)
 
-        # Cria o canvas do Matplotlib
+        import matplotlib.pyplot as plt
         self.fig, self.ax = plt.subplots()
         self.canvas = FigureCanvas(self.fig)
-        # Conecta eventos do Matplotlib
         self.canvas.mpl_connect("motion_notify_event", self.on_hover)
         self.canvas.mpl_connect("button_press_event", self.on_mouse_press)
         self.canvas.mpl_connect("motion_notify_event", self.on_mouse_move)
         self.canvas.mpl_connect("button_release_event", self.on_mouse_release)
         self.canvas.wheelEvent = self.wheel_zoom_event
 
-        # Placeholder inicial sem grid
         self.ax.axis("off")
         self.ax.text(
             0.5, 0.5,
@@ -66,111 +59,85 @@ class DXFInterface(QWidget):
         )
         self.canvas.draw()
 
-        # SIDEBAR: agrupa vários QGroupBox no layout lateral
         self.sidebar_widget = QWidget(self)
         sidebar_layout = QVBoxLayout(self.sidebar_widget)
         sidebar_layout.setContentsMargins(10, 10, 10, 10)
         sidebar_layout.setSpacing(10)
 
-        # 1) Grupo Arquivo
         self.file_group = QGroupBox("Arquivo")
         file_layout = QVBoxLayout(self.file_group)
         self.select_button = QPushButton("📂 Selecionar DXF")
         self.select_button.clicked.connect(self.select_dxf)
         file_layout.addWidget(self.select_button)
-
         self.generate_button = QPushButton("✨ Gerar Layout")
         self.generate_button.setStyleSheet("background-color: #007ACC; font-weight: bold; padding: 10px; font-size: 16px;")
         self.generate_button.clicked.connect(self.gerar_layout)
         file_layout.addWidget(self.generate_button)
         sidebar_layout.addWidget(self.file_group)
 
-        # 2) Grupo Medições
         self.medicao_group = QGroupBox("Medições")
         medicao_layout = QVBoxLayout(self.medicao_group)
-
         self.ruler_button = QPushButton("📏 Medir")
         self.ruler_button.clicked.connect(self.toggle_measurement_mode)
         medicao_layout.addWidget(self.ruler_button)
-
         self.clear_button = QPushButton("🧹 Limpar Medições")
         self.clear_button.clicked.connect(self.limpar_medicoes)
         medicao_layout.addWidget(self.clear_button)
-
         self.zoom_in_button = QPushButton("🔍 Zoom +")
         self.zoom_in_button.clicked.connect(lambda: self.ajustar_zoom(0.9))
         medicao_layout.addWidget(self.zoom_in_button)
-
         self.zoom_out_button = QPushButton("🔎 Zoom −")
         self.zoom_out_button.clicked.connect(lambda: self.ajustar_zoom(1.1))
         medicao_layout.addWidget(self.zoom_out_button)
-
         self.reset_button = QPushButton("♻️ Redefinir Visualização")
         self.reset_button.clicked.connect(self.reset_view)
         medicao_layout.addWidget(self.reset_button)
-
         sidebar_layout.addWidget(self.medicao_group)
 
-        # 3) Grupo Layers
         self.layer_group = QGroupBox("Layers Disponíveis")
         layer_layout = QVBoxLayout(self.layer_group)
         self.layer_list = QListWidget(self)
         layer_layout.addWidget(self.layer_list)
         sidebar_layout.addWidget(self.layer_group)
-
         sidebar_layout.addStretch()
 
-        # Splitter para dividir canvas e sidebar
         splitter = QSplitter(Qt.Horizontal, self)
         splitter.addWidget(self.canvas)
         splitter.addWidget(self.sidebar_widget)
         splitter.setStretchFactor(0, 4)
         splitter.setStretchFactor(1, 1)
-
-        # Layout principal vertical
         main_layout = QVBoxLayout(self)
         main_layout.addWidget(splitter)
 
-        # PAINEL INFERIOR (output panel)
         self.output_panel = QWidget(self)
         self.output_panel.setFixedHeight(40)
         output_layout = QHBoxLayout(self.output_panel)
         output_layout.setContentsMargins(5, 5, 5, 5)
         output_layout.setSpacing(10)
 
-        # Botões: Definir local, Abrir local
         self.btn_set_output = QPushButton("Definir Local de Saída", self.output_panel)
         self.btn_set_output.clicked.connect(self.definir_local_saida)
         output_layout.addWidget(self.btn_set_output)
-
         self.btn_open_output = QPushButton("Abrir Local de Saída", self.output_panel)
         self.btn_open_output.clicked.connect(self.abrir_local_saida)
         output_layout.addWidget(self.btn_open_output)
-
-        # Barra de progresso e label de status (à direita)
-        output_layout.addStretch(1)  # Alinha botões à esquerda
-
-        # Exemplo de progress bar se quiser animar algo
+        output_layout.addStretch(1)
         self.progress_bar = QProgressBar(self.output_panel)
         self.progress_bar.setFixedWidth(120)
         self.progress_bar.setTextVisible(False)
         self.progress_bar.hide()
         output_layout.addWidget(self.progress_bar)
-
         self.status_label = QLabel("Pronto", self.output_panel)
         self.status_label.setStyleSheet("color: #ffffff;")
         output_layout.addWidget(self.status_label)
-
         self.output_panel.setStyleSheet("""
             background-color: #2d2d30;
             color: #ffffff;
             font-size: 11px;
         """)
-
         main_layout.addWidget(self.output_panel, alignment=Qt.AlignLeft)
-
         self.setLayout(main_layout)
-
+        
     def dark_theme(self):
         return """
             QWidget {
@@ -264,14 +231,14 @@ class DXFInterface(QWidget):
             checkbox = QCheckBox(nome)
             checkbox.setChecked(True)
             checkbox.setStyleSheet("color: white;")
-            checkbox.stateChanged.connect(self.redesenhar)
+            checkbox.stateChanged.connect(lambda _, cb=checkbox: self.redesenhar(reset_view=False))
             self.layer_list.addItem(item)
             self.layer_list.setItemWidget(item, checkbox)
 
         # Remove placeholder e desenha
         self.ax.clear()
         self.ax.axis("on")
-        self.redesenhar()
+        self.redesenhar(reset_view=True)
 
     # Botão: Gerar Layout
     def gerar_layout(self):
@@ -327,17 +294,33 @@ class DXFInterface(QWidget):
             super(DXFInterface, self).wheelEvent(event)
 
     # Redesenha o que está na tela
-    def redesenhar(self):
+    def redesenhar(self, reset_view=False):
+        manter_visao = not reset_view and self.ax.has_data()
+        xlim = self.ax.get_xlim() if manter_visao else None
+        ylim = self.ax.get_ylim() if manter_visao else None
+
         layers_ativos = [
             self.layer_list.itemWidget(self.layer_list.item(i)).text()
             for i in range(self.layer_list.count())
             if self.layer_list.itemWidget(self.layer_list.item(i)).isChecked()
         ]
+
+        # Limpa e redesenha
         self.ax.clear()
         draw_dxf(self.ax, self.dxf_entities, layers_ativos)
         for p1, p2, dist in self.medicoes_salvas:
             self.plot_medicao(p1, p2, dist)
-        self.canvas.draw()
+
+        # Restaura a visão do usuário se necessário
+        if manter_visao and xlim and ylim:
+            self.ax.set_xlim(xlim)
+            self.ax.set_ylim(ylim)
+        else:
+            self.ax.relim()
+            self.ax.autoscale_view()
+
+        self.ax.set_aspect('equal', adjustable='box')
+        self.canvas.draw_idle()
 
     # Desenha medição (linhas e rótulos de distância)
     def plot_medicao(self, p1, p2, dist):
@@ -352,11 +335,7 @@ class DXFInterface(QWidget):
 
     # Botão: Reset View
     def reset_view(self):
-        self.redesenhar()
-        self.ax.relim()
-        self.ax.autoscale_view()
-        self.ax.set_aspect('equal', adjustable='box')
-        self.canvas.draw_idle()
+        self.redesenhar(reset_view=True)
 
     # Evento: clique do mouse
     def on_mouse_press(self, event):
@@ -386,7 +365,15 @@ class DXFInterface(QWidget):
                     dist = math.dist(*self.measurement_points)
                     self.medicoes_salvas.append((self.measurement_points[0], self.measurement_points[1], dist))
                     self.measurement_points.clear()
+                    xlim = self.ax.get_xlim()
+                    ylim = self.ax.get_ylim()
+
                     self.redesenhar()
+
+                    # Restaura os limites para manter a visão do usuário
+                    self.ax.set_xlim(xlim)
+                    self.ax.set_ylim(ylim)
+                    self.canvas.draw_idle()
             return
 
         # Se não está medindo, ativa o pan
@@ -402,12 +389,13 @@ class DXFInterface(QWidget):
         dy = p1[1] - p2[1]
         return math.hypot(dx, dy) < tolerancia
 
+
     # Evento: mover o mouse
+
     def on_mouse_move(self, event):
         if event.inaxes != self.ax:
             return
 
-        # Se arrastando ponto de medição
         if self._selected_point is not None:
             i, idx = self._selected_point
             p1, p2, _ = self.medicoes_salvas[i]
@@ -418,10 +406,15 @@ class DXFInterface(QWidget):
             else:
                 dist = math.dist(p1, new_point)
                 self.medicoes_salvas[i] = (p1, new_point, dist)
+
+            xlim = self.ax.get_xlim()
+            ylim = self.ax.get_ylim()
             self.redesenhar()
+            self.ax.set_xlim(xlim)
+            self.ax.set_ylim(ylim)
+            self.canvas.draw_idle()
             return
 
-        # Se está em modo pan
         if self._is_panning and event.xdata and event.ydata and self._pan_start:
             dx = self._pan_start[0] - event.xdata
             dy = self._pan_start[1] - event.ydata
@@ -557,4 +550,4 @@ if __name__ == "__main__":
     def start_interface():
         return DXFInterface()
 
-    show_splash_and_launch(start_interface, delay=5000)
+    show_splash_and_launch(start_interface)

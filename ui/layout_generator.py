@@ -30,11 +30,16 @@ MAX_DESENHISTA = 60  # Limite máximo para o nome do DESENHISTA
 
 
 def resource_path(relative_path):
+    """Retorna o caminho absoluto, mesmo quando empacotado com PyInstaller"""
     try:
-        base_path = sys._MEIPASS  # Quando empacotado pelo PyInstaller
-    except Exception:
-        base_path = os.path.abspath(".")  # Durante o desenvolvimento (modo normal)
-    return os.path.join(base_path, relative_path)
+        # Caso empacotado
+        base_path = sys._MEIPASS
+    except AttributeError:
+        # Em desenvolvimento
+        base_path = os.path.abspath(".")
+
+    # Caminho completo real
+    return os.path.normpath(os.path.join(base_path, relative_path))
 
 def set_cell_value(ws, cell_coord, value):
     for merged_range in ws.merged_cells.ranges:
@@ -45,33 +50,38 @@ def set_cell_value(ws, cell_coord, value):
     ws[cell_coord].value = value
 
 def converter_excel_para_pdf_com_libreoffice(excel_path):
-    """
-    Converte um arquivo .xlsx para .pdf usando LibreOffice Portable.
-    """
     try:
-        libreoffice_path = resource_path("LibreOfficePortable/App/libreoffice/program/soffice.exe")
+        libreoffice_path = os.path.join(os.getcwd(), "LibreOfficePortable", "App", "libreoffice", "program", "soffice.exe")
         print(f"📌 Caminho do LibreOffice: {libreoffice_path}")
         print(f"📌 Excel de entrada: {excel_path}")
 
-        if not os.path.exists(libreoffice_path):
-            raise FileNotFoundError("❌ LibreOffice Portable não encontrado no caminho especificado.")
+        if not os.path.isfile(libreoffice_path):
+            raise FileNotFoundError(f"❌ LibreOffice não encontrado em: {libreoffice_path}")
 
         excel_path = os.path.abspath(excel_path)
         output_dir = os.path.dirname(excel_path)
-
         print(f"📌 Diretório de saída: {output_dir}")
-        
+
         command = [
-            libreoffice_path,
-            "--headless",
-            "--convert-to", "pdf",
-            "--outdir", output_dir,
-            excel_path
-        ]
+        libreoffice_path,
+        "--headless",
+        "--nologo",
+        "--convert-to", "pdf",
+        "--outdir", output_dir,
+        excel_path
+    ]
+
         print("📤 Comando que será executado:")
         print(" ".join(command))
 
-        subprocess.run(command, check=True)
+        creationflags = subprocess.CREATE_NO_WINDOW if sys.platform.startswith("win") else 0
+
+        print("⚠️ Tentando rodar o comando:")
+        print(" ".join(command))
+        print(f"Arquivo existe? {os.path.exists(excel_path)}")
+        print(f"LibreOffice existe? {os.path.exists(libreoffice_path)}")
+
+        subprocess.run(command, check=True, creationflags=creationflags, timeout=30)
 
         pdf_path = excel_path.replace(".xlsx", ".pdf")
         print(f"📌 Esperando PDF em: {pdf_path}")
@@ -84,6 +94,9 @@ def converter_excel_para_pdf_com_libreoffice(excel_path):
             print("❌ PDF não foi gerado.")
             return None
 
+    except subprocess.TimeoutExpired:
+        print("⏰ Tempo limite excedido ao tentar gerar o PDF.")
+        return None
     except Exception as e:
         print(f"❌ Erro ao converter Excel para PDF: {e}")
         return None

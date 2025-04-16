@@ -1,0 +1,17 @@
+# build.ps1 - Script para empacotar o DXF-CEVASA com PyInstaller no PowerShell
+
+Write-Host "📦 Iniciando empacotamento com PyInstaller..." -ForegroundColor Cyan
+
+# Caminho para o arquivo principal
+$main = "main_interface.py"
+
+# Executar PyInstaller com todos os parâmetros
+pyinstaller --noconfirm --onedir --windowed --icon=icon.ico `
+  --add-data "resources;resources" `
+  --add-data "dxf;dxf" `
+  --add-data "ui;ui" `
+  --add-data "LibreOfficePortable;LibreOfficePortable" `
+  $main
+
+Write-Host "`n✅ Empacotamento concluído!" -ForegroundColor Green
+Write-Host "🔎 Arquivo gerado: dist\main_interface\main_interface.exe" -ForegroundColor Yellow
