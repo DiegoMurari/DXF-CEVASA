@@ -20,7 +20,6 @@ from ui.layout_generator import gerar_layout_final  # Ajuste para usar dados["ou
 from ui.gui import draw_dxf
 from ui.imagem_utils import salvar_mapa_como_png
 
-
 class DXFInterface(QWidget):
     def __init__(self):
         super().__init__()
@@ -553,7 +552,9 @@ class DXFInterface(QWidget):
 
 
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    window = DXFInterface()
-    window.show()
-    sys.exit(app.exec())
+    from ui.splash import show_splash_and_launch
+
+    def start_interface():
+        return DXFInterface()
+
+    show_splash_and_launch(start_interface, delay=5000)

@@ -30,13 +30,11 @@ MAX_DESENHISTA = 60  # Limite máximo para o nome do DESENHISTA
 
 
 def resource_path(relative_path):
-        try:
-            base_path = sys._MEIPASS
-        except Exception:
-            # Garante que o caminho sempre parte da raiz do projeto
-            base_path = os.path.dirname(os.path.abspath(__file__))
-            base_path = os.path.abspath(os.path.join(base_path, ".."))  # Sobe para a raiz
-        return os.path.join(base_path, relative_path)
+    try:
+        base_path = sys._MEIPASS  # Quando empacotado pelo PyInstaller
+    except Exception:
+        base_path = os.path.abspath(".")  # Durante o desenvolvimento (modo normal)
+    return os.path.join(base_path, relative_path)
 
 def set_cell_value(ws, cell_coord, value):
     for merged_range in ws.merged_cells.ranges:
