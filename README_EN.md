@@ -1,97 +1,69 @@
+📐 DXF - CEVASA
+The system is a specialized solution developed to simplify and automate the processing of DXF files (a standard format used by technical drawing software such as AutoCAD), aiming to generate detailed and accurate reports and spreadsheets for agricultural systematization projects, especially for planting.
 
-# 📐 DXF - CEVASA
+✅ Features
+📁 Intuitive interface for selecting .dxf files
 
-The system is a specialized solution developed to simplify and automate the processing of DXF files (standard format used by CAD software like AutoCAD), with the goal of generating detailed and accurate reports and spreadsheets for agricultural systematization projects, especially for planting.
+🗺️ Interactive DXF map viewer with layer filters
 
----
+📏 Direct measurement tool on the map
 
-## ✅ Features
+🧾 Automatic generation of:
 
-- 📁 Intuitive interface for selecting `.dxf` files  
-- 🗺️ Interactive DXF map visualization with layer filters  
-- 📏 Direct measurement tool on the map  
-- 🧾 Automatic generation of:  
-  - **Line length by layer** table  
-  - **Field plots** table  
-  - Legend with colors and layer names  
-- 🖼️ Automatic insertion of the map image  
-- 📄 Excel spreadsheet + PDF generation  
-- 🧩 Custom icon  
-- 🔒 Clean interface, no terminal window in the packaged version  
+Length by layer table
 
----
+Plot division table
 
-## 🖥️ Initial Interface
+Legend with layer names and colors
 
-<p align="center">
-  <img src="docs/layout_excel_mapa.png" alt="Initial Interface" width="300">
-</p>
+🖼️ Automatic insertion of the map image
 
-System start screen. By clicking **“Select DXF”**, you choose the topographic file to be processed.
+📄 Excel spreadsheet + PDF generation
 
----
+🧩 Custom icon
 
-## 🗺️ Interactive DXF Visualization
+🔒 Clean interface, no terminal window in the packaged version
 
-<p align="center">
-  <img src="docs/visualizacao_dxf.png" alt="DXF Visualization" width="800">
-</p>
+<h3 align="center">🎬 Project Demo</h3> <p align="center"> <a href="https://drive.google.com/file/d/1XvG21EYv-gb0cMijzg9xmujGQz_Yirt5/view?usp=sharing"> <img src="https://img.icons8.com/fluency/240/play-button-circled.png" alt="Click to watch the demo" /> </a> </p>
+🖥️ Initial Interface
+<p align="center"> <img src="docs/Tela_inicial.png" alt="Initial Screen" width="600"> </p> <p align="center"> <img src="docs/Tela_inicial_arrastado.png" alt="Initial Screen - Dragged" width="600"> </p>
+🗺️ Interactive DXF Viewer
+<p align="center"> <img src="docs/Tela_inicial_dxf_aberto.png" alt="DXF Viewer" width="800"> </p>
+The system automatically renders the map extracted from the DXF, preserving colors, texts, and geometries.
+On the right panel, you have buttons to reset view, measure distances, and save the final image.
 
-The system automatically renders the map extracted from the DXF, preserving colors, texts, and geometries.  
-On the right side, you have buttons to reset the view, measure distances, and save the final figure.
+✅ Spreadsheet Entry and Layer Filters
+<p align="center"> <img src="docs/Janela_layout.png" alt="Layer Selection" width="400"> </p>
+The "Designer" field always saves the last entered name to speed up the process.
 
----
+Before generating the spreadsheet, the system allows you to choose which layers should be included in the calculations.
 
-## ✅ Layer Filters
+📄 Map and Legend Generated in the Spreadsheet
+<p align="center"> <img src="docs/Pdf_frente.png" alt="Spreadsheet Map - Front" width="700"> </p> <p align="center"> <img src="docs/Pdf_costas.png" alt="Spreadsheet Map - Back" width="700"> </p>
+The spreadsheet includes:
 
-<p align="center">
-  <img src="docs/selecionar_layers.png" alt="Layer Selection" width="400">
-</p>
+Rendered DXF map
 
-Before generating the spreadsheet, the system allows you to select **which layers should be included in the calculations**.
+Automatically generated legend based on used layers
 
----
+Automatically filled fields:
 
-## ✅ Fill Excel
+Current date
 
-<p align="center">
-  <img src="docs/informações_planilha.png" alt="Fill Excel" width="400">
-</p>
+Version (incremental)
 
-After confirming the filters, the system shows this window **to enter the information into the spreadsheet**.
+Property name (from the DXF file)
 
-The draftsman field will always save the last name entered to speed up the process.
+Cane area, scale, distance (entered by user)
 
----
+📊 Length and Plot Tables
+Based on the lines in the DXF, the system calculates:
 
-## 📄 Map and Legend Generated in the Spreadsheet
+Length per layer (count, total, and average)
 
-<p align="center">
-  <img src="docs/interface_inicial.png" alt="Map in Spreadsheet" width="700">
-</p>
+Area per plot, in hectares and alqueires
 
-The generated spreadsheet includes:
+Total cultivable area
 
-- Rendered DXF map  
-- Automatic legend based on the used layers  
-- Auto-filled data:
-  - **Current date**  
-  - **Version (incremental)**  
-  - Property name (DXF file name)  
-  - Sugarcane area, scale, distance (entered by the user)  
+🔄 The tables are generated automatically based on visible layers and text near the geometries.
 
----
-
-## 📊 Length and Field Plot Tables
-
-<p align="center">
-  <img src="docs/planilha_tabelas.png" alt="Tables" width="700">
-</p>
-
-Based on the DXF lines, the system calculates:
-
-- **Length by layer** (quantity, total, and average)  
-- **Area by plot**, in hectares and alqueires  
-- **Total cultivable area**
-
-> 🔄 The tables are automatically generated based on visible layers and texts near the geometries.
