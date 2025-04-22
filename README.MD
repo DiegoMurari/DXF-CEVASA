@@ -99,9 +99,3 @@ Com base nas linhas do DXF, o sistema calcula:
 
 ---
 
-## 🧩 Ícone Personalizado
-
-<p align="center">
-  <img src="docs/Ícone.png" alt="Ícone Personalizado" width="120">
-</p>
-
