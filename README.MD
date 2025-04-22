@@ -53,23 +53,13 @@ Na lateral direita, você tem botões para redefinir visualização, medir dist�
 
 ---
 
-## ✅ Preenchimento da Planilha
-
-<p align="center">
-  <img src="docs/informações_planilha.png" alt="Preencher Excel" width="400">
-</p>
-
-Após confirmar os filtros, o sistema apresenta essa janela **para inserir as informações na planilha**.
-
-O campo "desenhista" sempre salva o último nome inserido para agilizar o preenchimento.
-
----
-
-## ✅ Filtros por Layer
+## ✅ Preenchimento da Planilha e Filtros por Layer
 
 <p align="center">
   <img src="docs/Janela_layout.png" alt="Seleção de Layers" width="400">
 </p>
+
+O campo "desenhista" sempre salva o último nome inserido para agilizar o preenchimento.
 
 Antes de gerar a planilha, o sistema permite selecionar **quais layers devem ser incluídos nos cálculos**.
 
