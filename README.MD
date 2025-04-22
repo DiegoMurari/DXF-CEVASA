@@ -89,10 +89,6 @@ A planilha gerada inclui:
 
 ## 📊 Tabelas de Comprimentos e Talhões
 
-<p align="center">
-  <img src="docs/planilha_tabelas.png" alt="Tabelas" width="700">
-</p>
-
 Com base nas linhas do DXF, o sistema calcula:
 
 - **Comprimento por layer** (quantidade, total e média)
