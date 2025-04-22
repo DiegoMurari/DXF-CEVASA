@@ -28,20 +28,24 @@ O sistema é uma solução especializada desenvolvida para simplificar e automat
   </a>
 </p>
 
+---
+
 ## 🖥️ Interface Inicial
 
 <p align="center">
-  <img src="docs/layout_excel_mapa.png" alt="Interface Inicial" width="300">
+  <img src="docs/Tela_inicial.png" alt="Tela Inicial" width="600">
 </p>
 
-Tela de entrada do sistema. Ao clicar em **“Selecionar DXF”**, você escolhe o arquivo topográfico a ser processado.
+<p align="center">
+  <img src="docs/Tela_inicial_arrastado.png" alt="Tela Inicial - Arrastado" width="600">
+</p>
 
 ---
 
 ## 🗺️ Visualização Interativa do DXF
 
 <p align="center">
-  <img src="docs/visualizacao_dxf.png" alt="Visualização DXF" width="800">
+  <img src="docs/Tela_inicial_dxf_aberto.png" alt="Visualização DXF" width="800">
 </p>
 
 O sistema renderiza automaticamente o mapa extraído do DXF, preservando as cores, textos e geometrias.  
@@ -49,22 +53,22 @@ Na lateral direita, você tem botões para redefinir visualização, medir dist�
 
 ---
 
-## ✅ Preencher excel
+## ✅ Preenchimento da Planilha
 
 <p align="center">
-  <img src="docs/informações_planilha.png" alt="Preencher excel" width="400">
+  <img src="docs/informações_planilha.png" alt="Preencher Excel" width="400">
 </p>
 
-Apos confirmar os filtros, o sistema apresenta essa janela **para inserir as informações na planilha**.
+Após confirmar os filtros, o sistema apresenta essa janela **para inserir as informações na planilha**.
 
-O campo desenhista sempre vai salvar o ultimo nome inserido para agilizar o preenchimento.
+O campo "desenhista" sempre salva o último nome inserido para agilizar o preenchimento.
 
 ---
 
 ## ✅ Filtros por Layer
 
 <p align="center">
-  <img src="docs/selecionar_layers.png" alt="Seleção de Layers" width="400">
+  <img src="docs/Janela_layout.png" alt="Seleção de Layers" width="400">
 </p>
 
 Antes de gerar a planilha, o sistema permite selecionar **quais layers devem ser incluídos nos cálculos**.
@@ -74,7 +78,11 @@ Antes de gerar a planilha, o sistema permite selecionar **quais layers devem ser
 ## 📄 Mapa e Legenda Gerados na Planilha
 
 <p align="center">
-  <img src="docs/interface_inicial.png" alt="Mapa na Planilha" width="700">
+  <img src="docs/Pdf_frente.png" alt="Mapa na Planilha - Frente" width="700">
+</p>
+
+<p align="center">
+  <img src="docs/Pdf_costas.png" alt="Mapa na Planilha - Costas" width="700">
 </p>
 
 A planilha gerada inclui:
@@ -104,3 +112,10 @@ Com base nas linhas do DXF, o sistema calcula:
 > 🔄 As tabelas são montadas automaticamente com base nos layers visíveis e textos próximos às geometrias.
 
 ---
+
+## 🧩 Ícone Personalizado
+
+<p align="center">
+  <img src="docs/Ícone.png" alt="Ícone Personalizado" width="120">
+</p>
+
