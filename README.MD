@@ -15,7 +15,6 @@ O sistema é uma solução especializada desenvolvida para simplificar e automat
   - Legenda com cores e nomes dos layers
 - 🖼️ Inserção automática da imagem do mapa
 - 📄 Geração de planilha Excel + PDF
-- 🧩 Ícone personalizado
 - 🔒 Interface limpa, sem terminal aberto na versão empacotada
 
 ---
