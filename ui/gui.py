@@ -3,7 +3,7 @@ import sys
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Button, CheckButtons
-from matplotlib.patches import Arc, Ellipse
+from matplotlib.patches import Arc, Ellipse, Polygon, Circle
 import matplotlib.gridspec as gridspec
 import math
 import re
@@ -38,72 +38,128 @@ def setup_plot(ax):
     ax.set_aspect('equal', adjustable='box')
 
 
-def draw_dxf(ax, dxf_entities, visible_layers=None):
-    ax.cla()
-    setup_plot(ax)  # Certifique-se que essa função está definida no seu código
+import re
+import math
+import matplotlib.pyplot as plt
+from matplotlib.patches import Polygon, Circle, Arc, Ellipse
 
-    for entity in dxf_entities:
-        if visible_layers and entity.get("layer") not in visible_layers:
+def draw_dxf(ax, dxf_entities, visible_layers=None):
+    """
+    Desenha entidades DXF em ax, sem criar linhas extras entre pontos distantes.
+    - Layer “XLEGENDA SISTEMATIZAÇÃO”: triângulo preenchido.
+    - Layers contendo “LOMB”: círculos preenchidos.
+    - Outras POLYLINE/SOLID: só segmentos consecutivos (nunca fecha).
+    - TEXT/MTEXT/ATTRIB/ATTDEF: exatamente como no primeiro código.
+    """
+    ax.cla()
+    setup_plot(ax)
+
+    for ent in dxf_entities:
+        layer   = ent.get("layer", "")
+        if visible_layers and layer not in visible_layers:
             continue
 
-        etype = entity.get("type")
-        color = entity.get("color", (0, 0, 0))
+        etype    = ent.get("type")
+        color    = ent.get("color", (0, 0, 0))
+        layer_up = layer.upper()
+        is_lomb  = "LOMB" in layer_up
+        is_xleg  = layer_up == "XLEGENDA SISTEMATIZAÇÃO"
 
+        # LINE
         if etype == "LINE":
-            x1, y1 = entity["start"][:2]
-            x2, y2 = entity["end"][:2]
-            ax.plot([x1, x2], [y1, y2], color=color, linewidth=1)
+            x1,y1 = ent["start"][:2]
+            x2,y2 = ent["end"][:2]
+            ax.plot([x1,x2],[y1,y2], color=color, linewidth=1)
 
+        # POLYLINE: só segmentos consecutivos, ou triângulo preenchido no XLEGENDA
+        elif etype == "POLYLINE":
+            pts = [tuple(p[:2]) for p in ent.get("points",[])]
+            if is_xleg and len(pts) >= 3:
+                tri = Polygon(
+                    pts[:3], closed=True,
+                    facecolor=color, edgecolor=color, linewidth=1
+                )
+                ax.add_patch(tri)
+            else:
+                for i in range(len(pts)-1):
+                    x1,y1 = pts[i]
+                    x2,y2 = pts[i+1]
+                    ax.plot([x1,x2],[y1,y2], color=color, linewidth=1)
+
+        # SOLID: idem POLYLINE, mas respeita fill em XLEGENDA/LOMB
+        elif etype == "SOLID":
+            pts = [tuple(p) for p in ent.get("points",[])]
+            if is_xleg and len(pts)>=3:
+                poly = Polygon(pts[:3], closed=True,
+                               facecolor=color, edgecolor=color, linewidth=1)
+                ax.add_patch(poly)
+            else:
+                for i in range(len(pts)-1):
+                    x1,y1 = pts[i]
+                    x2,y2 = pts[i+1]
+                    ax.plot([x1,x2],[y1,y2], color=color, linewidth=1)
+
+        # CIRCLE
         elif etype == "CIRCLE":
-            center = entity["center"][:2]
-            radius = entity["radius"]
-            circle = plt.Circle(center, radius, edgecolor=color, facecolor='none', linewidth=1)
-            ax.add_patch(circle)
+            cx,cy = ent["center"][:2]
+            r     = ent["radius"]
+            circ = Circle(
+                (cx,cy), r,
+                facecolor=color if (is_lomb or is_xleg) else "none",
+                edgecolor=color, linewidth=1
+            )
+            ax.add_patch(circ)
 
+        # ARC
         elif etype == "ARC":
-            center = entity["center"][:2]
-            radius = entity["radius"]
-            start_angle = entity["start_angle"]
-            end_angle = entity["end_angle"]
-            arc = Arc(center, 2 * radius, 2 * radius, theta1=start_angle, theta2=end_angle,
+            cx,cy = ent["center"][:2]
+            r     = ent["radius"]
+            a0,a1 = ent["start_angle"], ent["end_angle"]
+            arc = Arc((cx,cy),2*r,2*r, theta1=a0, theta2=a1,
                       edgecolor=color, linewidth=1)
             ax.add_patch(arc)
 
-        elif etype == "POLYLINE":
-            pts = [tuple(pt[:2]) for pt in entity.get("points", []) if isinstance(pt, (list, tuple)) and len(pt) >= 2]
-            if len(pts) > 1:
-                xs, ys = zip(*pts)
-                ax.plot(xs, ys, color=color, linewidth=1)
-
+        # ELLIPSE
         elif etype == "ELLIPSE":
-            center = tuple(entity.get("center", (0, 0)))[:2]
-            width = entity.get("width", 1)
-            height = entity.get("height", 1)
-            angle = entity.get("angle", 0)
-            ellipse = Ellipse(center, width, height, angle=angle,
-                              edgecolor=color, facecolor='none', linewidth=1)
-            ax.add_patch(ellipse)
+            cx,cy = ent.get("center",(0,0))[:2]
+            w     = ent.get("width",1)
+            h     = ent.get("height",1)
+            ang   = ent.get("angle",0)
+            ell = Ellipse((cx,cy),w,h,angle=ang,
+                          facecolor=color if (is_lomb or is_xleg) else "none",
+                          edgecolor=color, linewidth=1)
+            ax.add_patch(ell)
 
+        # SPLINE / LEADER / DIMENSION: só segmentos
+        elif etype in ("SPLINE","LEADER","DIMENSION"):
+            pts = [tuple(p[:2]) for p in ent.get("points",[])]
+            for i in range(len(pts)-1):
+                x1,y1 = pts[i]
+                x2,y2 = pts[i+1]
+                ax.plot([x1,x2],[y1,y2], linestyle="--", color=color, linewidth=1)
 
-        elif etype in ["LEADER", "DIMENSION", "SPLINE"]:
-            pts = [tuple(pt[:2]) for pt in entity.get("points", []) if isinstance(pt, (list, tuple)) and len(pt) >= 2]
-            if len(pts) > 1:
-                xs, ys = zip(*pts)
-                ax.plot(xs, ys, color=color, linewidth=1, linestyle='--')
+        # TEXT / MTEXT / ATTRIB / ATTDEF — **como no seu primeiro código**
+        elif etype in ("TEXT","MTEXT","ATTRIB","ATTDEF"):
+            pos = ent.get("position",(0,0))[:2]
+            txt = ent.get("text","")
+            rot = ent.get("rotation",0)
+            font_size = ent.get("height",12)
+            # reduz fonte para “ha”
+            if re.match(r"^\d+(\.\d+)?(\s*ha)?$", txt.strip(), re.IGNORECASE):
+                font_size *= 0.5
+            # texto branco vira preto
+            text_color = color if color != (1,1,1) else (0,0,0)
+            ax.text(
+                pos[0], pos[1], txt,
+                color=text_color,
+                rotation=rot,
+                fontsize=font_size
+            )
 
-        elif etype in ["TEXT", "MTEXT", "ATTRIB", "ATTDEF"]:
-            pos = entity.get("position", (0, 0))[:2]
-            txt = entity.get("text", "")
-            rot = entity.get("rotation", 0)
-            font_size = entity.get("height", 12)
-            is_area = re.match(r'^\d+(\.\d+)?(\s*ha)?$', txt.strip())
-            font_size = font_size * 0.5 if is_area else font_size
-            text_color = color if color != (1, 1, 1) else (0, 0, 0)
-            ax.text(pos[0], pos[1], txt, color=text_color, rotation=rot, fontsize=font_size)
-
+        # HATCH (fallback)
         elif etype == "HATCH":
-            ax.text(0, 0, f"HATCH: {entity.get('pattern', '')}", color=color, fontsize=8)
+            ax.text(0,0,f"HATCH:{ent.get('pattern','')}",
+                    color=color, fontsize=6)
 
-    ax.autoscale(enable=True, axis='both', tight=True)
+    ax.autoscale(enable=True, axis="both", tight=True)
     plt.draw()
-

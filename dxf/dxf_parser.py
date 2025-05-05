@@ -1,35 +1,39 @@
-
 import math
 import ezdxf
 from collections import defaultdict
-from ui.layout_generator import gerar_layout_final  # antes estava errado
-from .dxf_utils import get_entity_color  # NOVO
+from .dxf_utils import get_entity_color  # função que retorna (r, g, b) normalizado
 import re
 
-# Mantido para compatibilidade, se necessário
 def get_entity_color_original(entity, doc):
+    """
+    Fallback que converte o ACI em RGB normalizado, mantendo compatibilidade.
+    """
     color_aci = entity.dxf.color
-    if color_aci is None or color_aci == 256:
-        layer = doc.layers.get(entity.dxf.layer)
-        color_aci = layer.color
-    elif color_aci == 0:
+    if color_aci is None or color_aci in (0, 256):
         layer = doc.layers.get(entity.dxf.layer)
         color_aci = layer.color
     r, g, b = ezdxf.colors.aci2rgb(color_aci)
-    return (r/255.0, g/255.0, b/255.0)
+    return (r / 255.0, g / 255.0, b / 255.0)
 
 def parse_entity(entity, doc):
+    """
+    Converte cada entidade DXF em um dict padronizado com:
+      - type: str ('LINE', 'CIRCLE', 'POLYLINE', 'SOLID', 'TEXT', etc.)
+      - atributos específicos (start, end, center, points, text, etc.)
+      - layer: nome da camada
+      - color: tupla (r, g, b)
+    """
     etype = entity.dxftype()
     layer = entity.dxf.layer
     color = get_entity_color(entity, doc)
 
+    # Block INSERT: explodir e herdar layer/cor
     if etype == 'INSERT':
         result = []
         try:
-            block_entities = list(entity.virtual_entities())
-            for be in block_entities:
-                result.extend(parse_entity(be, doc))
-
+            for sub in entity.virtual_entities():
+                sub.dxf.layer = layer
+                result.extend(parse_entity(sub, doc))
             for attrib in entity.attribs:
                 result.append({
                     'type': 'TEXT',
@@ -37,31 +41,14 @@ def parse_entity(entity, doc):
                     'position': tuple(attrib.dxf.insert),
                     'rotation': getattr(attrib.dxf, 'rotation', 0),
                     'height': getattr(attrib.dxf, 'height', 12),
-                    'layer': entity.dxf.layer,
-                    'color': get_entity_color(entity, doc),
+                    'layer': layer,
+                    'color': color,
                 })
         except Exception as e:
             print(f"[AVISO] Erro ao explodir INSERT: {e}")
         return result
 
-    if etype == 'DIMENSION':
-        result = []
-        try:
-            for sub in entity.virtual_entities():
-                result.extend(parse_entity(sub, doc))
-        except Exception:
-            pass
-        return result
-
-    if etype in ['MLEADER', 'LEADER']:
-        result = []
-        try:
-            for sub in entity.virtual_entities():
-                result.extend(parse_entity(sub, doc))
-        except Exception:
-            pass
-        return result
-
+    # Textos
     if etype in ('TEXT', 'MTEXT', 'ATTRIB', 'ATTDEF'):
         return [{
             'type': 'TEXT',
@@ -73,110 +60,167 @@ def parse_entity(entity, doc):
             'color': color,
         }]
 
+    # Linhas
     if etype == 'LINE':
         start = tuple(entity.dxf.start)
         end = tuple(entity.dxf.end)
-        length = math.sqrt((end[0] - start[0])**2 + (end[1] - start[1])**2)
         return [{
-            'type': 'LINE', 'start': start, 'end': end,
-            'layer': layer, 'color': color, 'length': length
+            'type': 'LINE',
+            'start': start,
+            'end': end,
+            'layer': layer,
+            'color': color,
+            'length': math.dist(start, end)
         }]
 
+    # Polilinhas
+    if etype in ('LWPOLYLINE', 'POLYLINE'):
+        pts = [tuple(pt[:2]) for pt in entity.get_points()] \
+              if hasattr(entity, 'get_points') \
+              else [tuple(v.dxf.location) for v in entity.vertices()]
+        total_length = sum(math.dist(pts[i], pts[i+1]) for i in range(len(pts)-1))
+        return [{
+            'type': 'POLYLINE',
+            'points': pts,
+            'layer': layer,
+            'color': color,
+            'length': total_length
+        }]
+
+    # Círculos
     if etype == 'CIRCLE':
         return [{
-            'type': 'CIRCLE', 'center': tuple(entity.dxf.center), 'radius': entity.dxf.radius,
-            'layer': layer, 'color': color
+            'type': 'CIRCLE',
+            'center': tuple(entity.dxf.center),
+            'radius': entity.dxf.radius,
+            'layer': layer,
+            'color': color
         }]
 
-    if etype == 'ARC':
-        return [{
-            'type': 'ARC', 'center': tuple(entity.dxf.center), 'radius': entity.dxf.radius,
-            'start_angle': entity.dxf.start_angle, 'end_angle': entity.dxf.end_angle,
-            'layer': layer, 'color': color
-        }]
-
-    if etype in ('LWPOLYLINE', 'POLYLINE'):
-        pts = [tuple(pt[:2]) for pt in entity.get_points()] if hasattr(entity, 'get_points') else [tuple(v.dxf.location) for v in entity.vertices()]
-        total_length = sum(math.dist(pts[i], pts[i + 1]) for i in range(len(pts) - 1))
-        return [{'type': 'POLYLINE', 'points': pts, 'layer': layer, 'color': color, 'length': total_length}]
-
-    if etype == 'ELLIPSE':
-        major_axis = entity.dxf.major_axis
-        angle = math.degrees(math.atan2(major_axis[1], major_axis[0]))
-        major_len = math.hypot(major_axis[0], major_axis[1])
-        return [{
-            'type': 'ELLIPSE', 'center': tuple(entity.dxf.center),
-            'width': major_len * 2, 'height': major_len * entity.dxf.ratio * 2,
-            'angle': angle, 'layer': layer, 'color': color
-        }]
-
-    if etype == 'SPLINE':
-        pts = [tuple(p) for p in entity.control_points]
-        return [{'type': 'SPLINE', 'points': pts, 'layer': layer, 'color': color}]
-
-    if etype == 'HATCH':
-        return [{'type': 'HATCH', 'pattern': entity.dxf.pattern_name, 'layer': layer, 'color': color}]
-
+    # Solids (triângulos, polígonos 2D preenchidos)
     if etype == 'SOLID':
         pts = [tuple(p) for p in entity.dxf.points]
-        return [{'type': 'SOLID', 'points': pts, 'layer': layer, 'color': color}]
+        return [{
+            'type': 'SOLID',
+            'points': pts,
+            'layer': layer,
+            'color': color
+        }]
 
+    # 3DFACE (faces 3D com 4 vértices)
     if etype == '3DFACE':
         pts = [tuple(entity.dxf.get_dxf_attrib(f'vtx{i}')) for i in range(4)]
-        return [{'type': '3DFACE', 'points': pts, 'layer': layer, 'color': color}]
+        return [{
+            'type': '3DFACE',
+            'points': pts,
+            'layer': layer,
+            'color': color
+        }]
 
-    if etype == 'IMAGE':
-        return [{'type': 'IMAGE', 'layer': layer, 'color': color, 'info': str(entity)}]
+    # Arcos
+    if etype == 'ARC':
+        return [{
+            'type': 'ARC',
+            'center': tuple(entity.dxf.center),
+            'radius': entity.dxf.radius,
+            'start_angle': entity.dxf.start_angle,
+            'end_angle': entity.dxf.end_angle,
+            'layer': layer,
+            'color': color
+        }]
 
+    # Elipses
+    if etype == 'ELLIPSE':
+        return [{
+            'type': 'ELLIPSE',
+            'center': tuple(entity.dxf.center),
+            'major_axis': tuple(entity.dxf.major_axis),
+            'ratio': entity.dxf.ratio,
+            'layer': layer,
+            'color': color
+        }]
+
+    # Splines
+    if etype == 'SPLINE':
+        pts = [tuple(p) for p in entity.control_points]
+        return [{
+            'type': 'SPLINE',
+            'points': pts,
+            'layer': layer,
+            'color': color
+        }]
+
+    # Hatches
+    if etype == 'HATCH':
+        return [{
+            'type': 'HATCH',
+            'pattern': entity.dxf.pattern_name,
+            'layer': layer,
+            'color': color
+        }]
+
+    # Pontos
     if etype == 'POINT':
-        return [{'type': 'POINT', 'position': tuple(entity.dxf.location), 'layer': layer, 'color': color}]
+        return [{
+            'type': 'POINT',
+            'position': tuple(entity.dxf.location),
+            'layer': layer,
+            'color': color
+        }]
 
-    if etype == 'XLINE':
-        return [{'type': 'XLINE', 'start': tuple(entity.dxf.start), 'unit_dir': tuple(entity.dxf.unit_dir), 'layer': layer, 'color': color}]
+    # Leaders, dimensões, etc.
+    if etype in ('MLEADER', 'LEADER', 'DIMENSION'):
+        out = []
+        for sub in entity.virtual_entities():
+            out.extend(parse_entity(sub, doc))
+        return out
 
-    if etype == 'RAY':
-        return [{'type': 'RAY', 'start': tuple(entity.dxf.start), 'unit_dir': tuple(entity.dxf.unit_dir), 'layer': layer, 'color': color}]
-    
-    if etype == 'BLOCK':
-        return [{'type': 'BLOCK', 'name': getattr(entity.dxf, "name", "Unnamed"), 'layer': layer, 'color': color, 'raw': str(entity)}]
-
-    if etype == 'TRACE':
-        points = [tuple(getattr(entity.dxf, f'vtx{i}', (0, 0))) for i in range(4)]
-        return [{'type': 'TRACE', 'points': points, 'layer': layer, 'color': color}]
-
-    if etype in ['MESH', 'REGION', 'SURFACE', '3DSOLID']:
-        return [{'type': etype, 'layer': layer, 'color': color, 'raw': str(entity)}]
-
-    return [{'type': etype, 'layer': layer, 'color': color, 'raw': str(entity)}]
+    # Qualquer outro tipo
+    return [{
+        'type': etype,
+        'layer': layer,
+        'color': color,
+        'raw': str(entity)
+    }]
 
 def parse_dxf(doc):
+    """
+    Percorre o modelspace e retorna a lista de todas as entidades processadas.
+    Também imprime um diagnóstico dos textos encontrados.
+    """
     all_entities = []
     msp = doc.modelspace()
-    for e in msp:
-        all_entities.extend(parse_entity(e, doc))
+    for ent in msp:
+        all_entities.extend(parse_entity(ent, doc))
 
     print("=== DIAGNÓSTICO DOS TEXTOS ===")
-    for entity in all_entities:
-        if entity.get("type") in ["TEXT", "MTEXT", "ATTRIB", "ATTDEF"]:
-            print(f"Texto encontrado: '{entity.get('text')}' | Posição: {entity.get('position')} | Layer: {entity.get('layer')}")
+    for e in all_entities:
+        if e.get('type') == 'TEXT':
+            print(f"Texto encontrado: '{e['text']}' | Posição: {e['position']} | Layer: {e['layer']}")
     print("=== FIM DO DIAGNÓSTICO ===")
 
     return all_entities
 
 def calcular_tabelas(dxf_entities):
+    """
+    Retorna dois dicts:
+      - layer_data: {layer: {'qtd': n_entidades, 'total': soma_comprimentos}}
+      - talhoes_data: {layer: {'area_ha': soma_áreas_lidas_em_TEXT}}
+    """
     layer_data = defaultdict(lambda: {'qtd': 0, 'total': 0.0})
-    for entity in dxf_entities:
-        if 'length' in entity:
-            layer_data[entity['layer']]['qtd'] += 1
-            layer_data[entity['layer']]['total'] += entity['length']
+    for e in dxf_entities:
+        if 'length' in e:
+            layer_data[e['layer']]['qtd'] += 1
+            layer_data[e['layer']]['total'] += e['length']
 
     talhoes_data = defaultdict(lambda: {'area_ha': 0.0})
-    for entity in dxf_entities:
-        if entity.get('type') == 'TEXT':
+    for e in dxf_entities:
+        if e.get('type') == 'TEXT':
+            txt = e['text'].replace('ha', '').strip()
             try:
-                area_value = float(entity['text'].replace('ha', '').strip())
-                talhoes_data[entity['layer']]['area_ha'] += area_value
+                val = float(txt)
+                talhoes_data[e['layer']]['area_ha'] += val
             except ValueError:
-                pass
+                continue
 
     return layer_data, talhoes_data

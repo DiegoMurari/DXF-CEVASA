@@ -25,6 +25,8 @@ from ui.imagem_utils import redimensionar_imagem, gerar_imagem_centrada, inserir
 from openpyxl.worksheet.page import PageMargins
 from ui.layout_dialog import ExtendedLayoutInfoDialog as LayoutInfoDialog
 from PySide6.QtWidgets import QApplication, QMessageBox
+import matplotlib.pyplot as plt
+from matplotlib.patches import Circle, Polygon, Rectangle
 
 MAX_DESENHISTA = 60  # Limite máximo para o nome do DESENHISTA
 
@@ -129,43 +131,117 @@ def preparar_planilha_para_pdf(wb, escalas_por_aba=None, escala_padrao=75, print
         if area:
             ws.print_area = area
 
-def adicionar_legenda_layers(ws, legenda_layers, start_row=1, start_col=1):
-    """
-    Gera uma legenda baseada no dicionário {layer_name: {"color": (r, g, b)}}.
-    Cada linha terá:
-      - 1 célula com cor de fundo (PatternFill)
-      - 1 célula com o nome do layer
-    """
-    # Exemplo de título "PROJETO DE SISTEMATIZAÇÃO"
-    titulo = "PROJETO DE SISTEMATIZAÇÃO"
-    titulo_cell = ws.cell(row=start_row, column=start_col, value=titulo)
-    titulo_cell.font = Font(bold=True, size=14)
-    ws.merge_cells(
-        start_row=start_row, start_column=start_col,
-        end_row=start_row, end_column=start_col + 2
-    )
-    titulo_cell.alignment = Alignment(horizontal="center", vertical="center")
+def adicionar_legenda_layers(ws, legenda_layers, entidades_exemplo, start_row=1, start_col=9):
+    import os
+    import matplotlib.pyplot as plt
+    from matplotlib.patches import Circle, Polygon, Rectangle
+    from openpyxl.drawing.image import Image as XLImage
+    from openpyxl.styles import Font, Alignment
+    from openpyxl.utils import get_column_letter
+    from PIL import Image as PILImage
 
-    # Deixe uma linha em branco após o título
+    # Estilos
+    font_bold   = Font(bold=True, size=12)
+    font_normal = Font(size=10)
+    align_left  = Alignment(horizontal="left", vertical="center")
+    align_center= Alignment(horizontal="center", vertical="center")
+
+    # Cabeçalho
+    ws.merge_cells(start_row=start_row, start_column=start_col,
+                   end_row=start_row,   end_column=start_col+1)
+    t = ws.cell(row=start_row, column=start_col, value="PROJETO DE SISTEMATIZAÇÃO")
+    t.font      = font_bold
+    t.alignment = align_center
+
+    os.makedirs("output", exist_ok=True)
     row = start_row + 2
+    col_letter = get_column_letter(start_col)
 
-    for layer_name, info in legenda_layers.items():
-        color_floats = info["color"]  # Ex.: (0.0, 1.0, 0.0) para verde
-        r_float, g_float, b_float = color_floats
-        # Converter floats [0..1] em RGB hex (ex.: "FF00FF")
-        r = int(r_float * 255)
-        g = int(g_float * 255)
-        b = int(b_float * 255)
-        color_hex = f"{r:02X}{g:02X}{b:02X}"
+    # calcula largura da célula em pixels (aprox. 7px por caractere)
+    cw = ws.column_dimensions[col_letter].width or 8.43
+    cell_width_px = int(cw * 7)
 
-        # Celula colorida
-        color_cell = ws.cell(row=row, column=start_col)
-        fill = PatternFill(start_color=color_hex, end_color=color_hex, fill_type="solid")
-        color_cell.fill = fill
+    for layer_name in legenda_layers:
+        upper = layer_name.upper()
+        entidade = entidades_exemplo.get(layer_name)
 
-        # Celula com o nome do layer ao lado
-        name_cell = ws.cell(row=row, column=start_col + 1, value=layer_name)
-        name_cell.alignment = Alignment(horizontal="left", vertical="center")
+        # override: tudo com "LOMBADA" vira círculo vermelho
+        if "LOMBADA" in upper:
+            shape = "CIRCLE"
+            cor   = (1.0, 0.0, 0.0)
+        else:
+            if not entidade:
+                shape = "EMPTY"
+                cor   = (1.0, 1.0, 1.0)
+            else:
+                cor = legenda_layers[layer_name]["color"]
+                if upper == "XLEGENDA SISTEMATIZAÇÃO":
+                    shape = "TRIANGLE"
+                else:
+                    shape = entidade["type"]
+
+        # desenha no Matplotlib num quadro 100×100px
+        fig, ax = plt.subplots(figsize=(1,1), dpi=100)
+        ax.axis("off"); ax.set_aspect("equal"); ax.set_facecolor("white")
+
+        try:
+            if shape == "TRIANGLE":
+                patch = Polygon([[0.5,0.1],[0.1,0.9],[0.9,0.9]],
+                                closed=True, facecolor=cor, edgecolor="black", linewidth=1.2,
+                                transform=ax.transAxes)
+                ax.add_patch(patch)
+
+            elif shape == "CIRCLE":
+                patch = Circle((0.5,0.5),0.25,
+                               facecolor=cor, edgecolor="black", linewidth=1.2,
+                               transform=ax.transAxes)
+                ax.add_patch(patch)
+
+            elif shape == "EMPTY":
+                patch = Rectangle((0.25,0.25),0.5,0.5,
+                                  facecolor="white", edgecolor="black", linewidth=1.5,
+                                  transform=ax.transAxes)
+                ax.add_patch(patch)
+
+            else:
+                # LINE/POLYLINE/SOLID → quadrado com cor do layer
+                patch = Rectangle((0.25,0.25),0.5,0.5,
+                                  facecolor=cor, edgecolor="black", linewidth=1.5,
+                                  transform=ax.transAxes)
+                ax.add_patch(patch)
+
+        except Exception as e:
+            print(f"⚠️ Erro ao desenhar '{layer_name}': {e}")
+            plt.close(fig)
+            row += 1
+            continue
+
+        # salva raw
+        raw_path = f"output/mini_{layer_name}_raw.png"
+        fig.savefig(raw_path, bbox_inches="tight", pad_inches=0.1, transparent=True)
+        plt.close(fig)
+
+        # abre e redimensiona para 30×30
+        im = PILImage.open(raw_path).convert("RGBA")
+        thumb = im.resize((30,30), PILImage.LANCZOS)
+
+        # cria canvas final com padding transparente à esquerda
+        final_path = f"output/mini_{layer_name}.png"
+        canvas = PILImage.new("RGBA", (cell_width_px, 30), (0,0,0,0))
+        offset_x = max(cell_width_px - 30, 0)
+        canvas.paste(thumb, (offset_x, 0), thumb)
+        canvas.save(final_path)
+
+        # insere imagem ancorada no canto superior esquerdo da célula
+        img = XLImage(final_path)
+        img.width  = cell_width_px
+        img.height = 30
+        ws.add_image(img, f"{col_letter}{row}")
+
+        # escreve o nome ao lado
+        c = ws.cell(row=row, column=start_col+1, value=layer_name)
+        c.font      = font_normal
+        c.alignment = align_left
 
         row += 1
 
@@ -513,7 +589,7 @@ def gerar_layout_final(dxf_file_path, layer_data, talhoes_dict, legenda_layers, 
 
     adicionar_tabela_comprimentos_custom(ws_pagina2, layer_data, start_row=4, start_col=2)
     adicionar_tabela_talhoes_custom(ws_pagina2, talhoes_dict, start_row=4, start_col=7)
-    adicionar_legenda_layers(ws_pagina1, legenda_layers, start_row=4, start_col=9)
+    adicionar_legenda_layers(ws_pagina1, legenda_layers, dados["entidades_exemplo"], start_row=4, start_col=9)
 
     image_path = os.path.join("output", "mapa.png")
     if os.path.exists(image_path):

@@ -263,7 +263,6 @@ class DXFInterface(QWidget):
             QMessageBox.information(self, "Operação Cancelada", "Operação cancelada pelo usuário.")
             return
 
-        # Adiciona o local de saída para PDF/Excel
         dados["out_dir"] = self.output_dir
 
         selected_layers_legendas = dados.get("selected_layers", selected_layers)
@@ -278,6 +277,14 @@ class DXFInterface(QWidget):
         layer_data, _ = calcular_tabelas(filtered_entities)
         legenda_layers = extrair_legenda_layers(filtered_entities)
         talhoes_dict = extrair_talhoes_por_proximidade(self.dxf_entities)
+
+        # ✅ CAPTURA AS ENTIDADES EXEMPLO
+        exemplos = {}
+        for ent in filtered_entities:
+            layer = ent.get("layer")
+            if layer not in exemplos and ent["type"] in ["LINE", "POLYLINE", "SOLID"]:
+                exemplos[layer] = ent
+        dados["entidades_exemplo"] = exemplos  # <-- adiciona no dicionário
 
         gerar_layout_final(self.dxf_path, layer_data, talhoes_dict, legenda_layers, dados)
 
